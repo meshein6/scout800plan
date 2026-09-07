@@ -84,6 +84,17 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
   main ol > li.has-check .chk { left:28px; }
 }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior:smooth; } }
+.filterbar { position:sticky; top:0; z-index:6; display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin:18px 0 6px; padding:9px 12px; background:var(--surface); border:1px solid var(--line-2); }
+.filterbar-label { font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-right:4px; }
+.filterbar button { font-family:var(--mono); font-size:12px; padding:4px 9px; background:var(--ground); color:var(--ink-2); border:1px solid var(--line-2); cursor:pointer; }
+.filterbar button:hover { color:var(--ink); background:var(--surface-2); }
+.filterbar button.on { background:var(--ink); color:var(--ground); border-color:var(--ink); }
+.filterbar-count { font-family:var(--mono); font-size:12px; color:var(--muted); margin-left:auto; }
+.filterbar-help { font-size:13px; color:var(--muted); max-width:72ch; }
+tr.filtered-out { display:none; }
+.paths th:first-child { width:20ch; }
+.paths td:first-child { font-weight:600; }
+@media (max-width: 640px) { .filterbar-count { margin-left:0; width:100%; } }
 </style>
 
 <header class="masthead">
@@ -119,6 +130,7 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <li><a href="#2-schedule-six-months-to-driving">2. Schedule — six months to driving</a></li>
 <li><a href="#3-budget-and-priorities">3. Budget and priorities</a><ul>
 <li><a href="#31-budget-roll-up-parts-outside-services-excluding-what-you-already-own">3.1 Budget roll-up (parts + outside services, excluding what you already own)</a></li>
+<li><a href="#32-what-you-must-buy-and-what-can-wait">3.2 What you must buy, and what can wait</a></li>
 </ul>
 </li>
 <li><a href="#4-tools-you-will-need-that-you-may-not-have">4. Tools you will need that you may not have</a></li>
@@ -129,6 +141,7 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <li><a href="#53-weeks-57-axles-on-the-bench">5.3 Weeks 5–7: axles on the bench</a></li>
 <li><a href="#54-weeks-89-spring-under-conversion-and-rolling-chassis">5.4 Weeks 8–9: spring-under conversion and rolling chassis</a></li>
 <li><a href="#55-weeks-812-engine">5.5 Weeks 8–12: engine</a></li>
+<li><a href="#551-the-two-engine-paths">5.5.1 The two engine paths</a></li>
 <li><a href="#56-weeks-512-bench-parallel-clutch-t-18-dana-20-steering-box">5.6 Weeks 5–12 (bench, parallel): clutch, T-18, Dana 20, steering box</a></li>
 <li><a href="#57-weeks-1013-powertrain-into-the-chassis">5.7 Weeks 10–13: powertrain into the chassis</a></li>
 </ul>
@@ -273,10 +286,10 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <p>Theoretical cranking pressure from the 196's 8.02:1 compression ratio is ~140 psi; IHPA's practical floor for a hot SV-family engine is 120 psi with no more than 10 psi spread. Your best wet reading (117) is under that floor and every dry reading is 55–65% of theoretical.</p>
 <p>The wet gains are the diagnostic: #1 +18, #3 +16, #4 +22 — oil sealed those cylinders, so rings and bores are the leak path. #2 gained only 7 psi from the lowest base, so oil could not fix #2: that is a <strong>valve-seat or head problem</strong>, and on this engine family an IHPA moderator estimates more than half the heads he sees are cracked between a valve seat and the plug hole. #2 gets a Magnaflux and pressure test before any money goes into the head.</p>
 <p>The cold 55–80% leakage figures overstate the truth — cold bores at minimum clearance with no oil film, hydraulic lifters that have bled down and may hold a valve a hair off its seat, and a very real chance the test was not at exact TDC-compression. Reasoned estimate for a <strong>warm</strong> test with all plugs out, throttle wide open, charged battery: <strong>~105–115 psi on #1/#4, ~95–105 on #3, ~90–100 on #2</strong>, and warm leak-down in the 25–45% band on 1/3/4 with #2 still worst. That is still "overhaul likely" territory, not "tune-up" territory.</p>
-<aside class="callout gate"><span class="callout-label">GATE 1 — engine scope</span><p> The warm test is worth doing only to confirm #2 as the head cylinder. The plan assumes a <strong>full overhaul</strong> (bore/hone to the next oversize, new pistons/rings, crank polish or grind, cam bearings, timing gears, valve job) because the wet gains say the bores are worn, not just the rings, and 0.020" cam-lobe wear is routine on these. The re-ring branch survives only if the machine shop measures bores within 0.005" taper/out-of-round and the crank within spec — decide at §6.4 step 6 with the block on the bench, not before.</p>
+<aside class="callout gate"><span class="callout-label">GATE 1 — engine scope</span><p> The warm test is worth doing only to confirm #2 as the head cylinder. The plan assumes a <strong>full overhaul</strong> (bore/hone to the next oversize, new pistons/rings, crank polish or grind, cam bearings, timing gears, valve job) because the wet gains say the bores are worn, not just the rings, and 0.020" cam-lobe wear is routine on these. The re-ring branch survives only if the machine shop measures bores within 0.005" taper/out-of-round and the crank within spec. <strong>Both paths are laid out side by side in §5.5.1</strong> — read that before you spend anything on the engine, and decide with the block on the bench, not before.</p>
 </aside>
 <h2 id="2-schedule-six-months-to-driving">2. Schedule — six months to driving</h2>
-<p>The critical path is not your weekends. It is three lead times: machine-shop turnaround on the engine (typically 3–6 weeks), the harness build (SSS: weeks; IHPA wiper kit: 8 weeks), and frame blasting. The plan front-loads the teardown so those clocks start in week 2.</p>
+<p>The critical path is not your weekends. It is three lead times: machine-shop turnaround on the engine (typically 3–6 weeks), and the harness build (SSS: weeks). The wiper kit is no longer on this list — see §6.8, you are keeping the original vacuum wipers. The plan front-loads the teardown so those clocks start in week 2.</p>
 <div class="tablewrap"><table>
 <thead>
 <tr>
@@ -294,7 +307,7 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <tr>
 <td>2–3</td>
 <td>Interior, Traveltop, tanks, harness, glass-in-doors out; engine + trans out; body off</td>
-<td>Engine to machine shop (week 3). Harness ordered with build date/chassis #. Wiper kit ordered</td>
+<td>Engine to machine shop (week 3). Harness ordered with build date/chassis # <strong>and no wiper circuit</strong>. Vacuum wiper motors bench-tested (§6.8)</td>
 </tr>
 <tr>
 <td>4</td>
@@ -461,6 +474,28 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 </tr>
 </tbody>
 </table></div>
+<h3 id="32-what-you-must-buy-and-what-can-wait">3.2 What you must buy, and what can wait</h3>
+<p>Every parts row carries two tags. The phase tag says <em>whether</em> you buy it; the priority letter says <em>when</em>. Read together they sort into four buckets, and only the first is money you are certain to spend.</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Bucket</th><th>Tags</th><th>What it means</th></tr></thead>
+<tbody>
+<tr><td><strong>Buy now — unavoidable</strong></td><td><span class="ph ph-p1">P1</span> + H</td><td>Safety-critical, blocks a later step, or long lead time. Nothing you learn later removes these from the list. Order in week 1</td></tr>
+<tr><td><strong>Buy on arrival</strong></td><td><span class="ph ph-p1">P1</span> + M or L</td><td>Certain you need it, short lead, no reason to tie the money up early. Order when you reach that section</td></tr>
+<tr><td><strong>Do not buy yet</strong></td><td><span class="ph ph-p1gate">P1-gate</span></td><td><strong>The expensive mistakes live here.</strong> Each row names a measurement, a phone call, or a gate that decides whether you need it at all — and several are either/or pairs where buying both is pure waste. Ordering one of these before its check is how a build overspends</td></tr>
+<tr><td><strong>Later, or already yours</strong></td><td><span class="ph ph-p2">P2</span> · owned</td><td>Paint and interior, deferred by design, plus what you already have. None of it blocks a driving truck</td></tr>
+</tbody>
+</table></div>
+<p>The gated rows are worth reading as a set before you spend anything, because most of them are decisions rather than parts: the engine kit waits on the machine shop’s measurements (§5.5.1), the wiper parts wait on a bench test (§6.8), the Dana 44 master kit waits on what the carrier bearings look like (§5.3), the rear brake cable waits on measuring the old one, and the drums wait on a phone call to IHPA about your swaged hubs.</p>
+<div class="filterbar" id="filterbar" hidden>
+  <span class="filterbar-label">Show parts</span>
+  <button type="button" data-filter="all" class="on">All</button>
+  <button type="button" data-filter="must">Buy now</button>
+  <button type="button" data-filter="soon">On arrival</button>
+  <button type="button" data-filter="gate">Do not buy yet</button>
+  <button type="button" data-filter="later">Later / owned</button>
+  <span class="filterbar-count" id="filtercount"></span>
+</div>
+<p class="filterbar-help">The buttons above filter every parts table in this plan at once, so you can read the build as a shopping list for one bucket at a time. They stay with you as you scroll.</p>
 <h2 id="4-tools-you-will-need-that-you-may-not-have">4. Tools you will need that you may not have</h2>
 <p>Engine hoist (2-ton) and load leveler; engine stand; 4 tall jack stands (6-ton) plus 4 shorter ones; two 4×4 × 8 ft posts and 4 sawhorses (or 4 camper jacks) for the tub; transmission jack or ATV jack; ¾"-drive breaker bar and a 250 ft-lb torque wrench (rear hub nuts, pinion nuts); ½"-drive click wrench 20–150 ft-lb and a 3/8"-drive in-lb wrench (bearing preloads); dial indicator with magnetic base (end play, runout, ring/pinion backlash); micrometer 3–4" and a bore gauge, or let the machine shop measure; spring scale (kingpin preload); 2-1/16" spindle socket; OTC 7394 hub puller; bearing race drivers; brass drift; hydraulic press access (axle bearings, u-joints — a local shop will press for $20); double-flare tool for 3/16" and 5/16"; tubing bender; vacuum brake bleeder or a helper; digital angle finder (pinion/caster); 4-ft level and plumb bob (axle centering); MIG with 0.023" wire and 75/25; 4½" grinder with cutoff, flap and wire wheels; HVLP gun with 1.8 tip (epoxy) and a schutz gun (Raptor); half-mask respirator with organic-vapor cartridges (isocyanates in every 2K product); leak-down tester and compression gauge; multimeter and a test light; heat gun; a label maker and 200 zip bags.</p>
 <h2 id="5-phase-1-chassis-and-running-gear">5. Phase 1 — chassis and running gear</h2>
@@ -491,7 +526,7 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <ol>
 <li>Photograph everything, everywhere, before a single bolt comes out: 360° exterior, every panel gap, under the dash, engine bay from six angles, underside from each corner, each spring and shackle, every wire connector. Two hundred photos is normal. They are your reassembly manual for the things the CTS-2302 does not cover.</li>
 <li>Finish the open §1.3 checks (transmission ID, T-case serial, spring area, wheel backspacing) and send them here. Engine is confirmed 4-196 and ratios 4.27; the transmission and T-case checks release the clutch kit, T-18 kit, Dana 20 kit, and rear cable orders.</li>
-<li>Order every part marked P1 in the per-section parts tables (§5–§6) that is not gated — H priority first. Ask SSS to start the harness (they need chassis number, build date, engine, transmission, alternator, and that you're running electric wipers and a 3-wire alternator). Order the New Port wiper kit.</li>
+<li>Order every part marked P1 in the per-section parts tables (§5–§6) that is not gated — H priority first. Ask SSS to start the harness (they need chassis number, build date, engine, transmission, alternator, and that you are running <strong>vacuum wipers — no wiper circuit, no wiper switch feed</strong> — and a 3-wire alternator). Bench-test both vacuum wiper motors this week (§6.8); the result decides whether you order the dual-action fuel pump alone or a motor rebuild with it.</li>
 <li>Drain and dispose of the fuel from the remaining tank (siphon into cans; a nearly empty tank is far more dangerous than a full one — see SAFETY below). Disconnect the battery and remove it.</li>
 <li>Put the truck on four 6-ton stands under the frame, wheels off, at working height. Roll the wheels/tires out of the way — they are not needed again until §7.</li>
 </ol>
@@ -978,6 +1013,28 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <li>Parking brake: cross-shaft, front cable, rear cable (4-speed length), equalizer. Leave slack.</li>
 </ol>
 <h3 id="55-weeks-812-engine">5.5 Weeks 8–12: engine</h3>
+<h3 id="551-the-two-engine-paths">5.5.1 The two engine paths</h3>
+<p>There are exactly two honest ways to do this engine, and the choice is not a matter of taste — it is decided by four measurements the machine shop takes with the block stripped on the bench. This section exists so you walk in already knowing what each answer costs you.</p>
+<p><strong>Before either path: settle the head.</strong> Your #2 cylinder gained only 7 psi wet from the lowest dry reading (§1.4), which is the signature of a valve-seat or head fault rather than rings — and cracks between a valve seat and the plug hole are common on this family. So #2’s head goes for Magnaflux and a pressure test <em>first</em>. Whatever it costs is <strong>common to both paths</strong> and must not be allowed to sway the block decision. Get that number, set it aside, then choose.</p>
+<div class="tablewrap"><table class="paths">
+<thead><tr><th></th><th>Path A — full overhaul</th><th>Path B — re-ring and refresh</th></tr></thead>
+<tbody>
+<tr><td>What it is</td><td>Bore and hone to the next oversize, new pistons and rings, crank ground or polished, new cam bearings, new cam and timing set, full valve job</td><td>Bores honed in place, new rings on the existing pistons, new rod and main bearings, full valve job, new gaskets and seals</td></tr>
+<tr><td>What must measure true to allow it</td><td>Nothing — this path is always available and is the plan’s default</td><td><strong>All four, or it is off the table:</strong> bore taper and out-of-round within 0.005"; crank journals within spec and unscored, needing polish only; cylinder walls that clean up with a hone without cutting through; cam lobes not worn past spec</td></tr>
+<tr><td>Machine work</td><td>Bore, hone, deck check, crank grind or polish, cam bearings, valve job, hot tank</td><td>Hone, deck check, crank polish, valve job, hot tank</td></tr>
+<tr><td>Parts</td><td>Full 196 overhaul kit, $2,320–2,700</td><td>Rings, bearings, gasket set, seals, timing set — reasoned estimate <strong>$900–1,600</strong>, not a quote</td></tr>
+<tr><td>Total, engine only</td><td><strong>$3,500–5,500</strong> (§3.1)</td><td><strong>$1,300–2,400</strong>, reasoned estimate</td></tr>
+<tr><td>Calendar</td><td>3–6 weeks at the shop. Already on the critical path; the schedule is built around it</td><td>2–3 weeks. Buys back roughly two weeks of slack</td></tr>
+<tr><td>What you get</td><td>A known-zero engine. Compression back near the 8.02:1 theoretical ~140 psi, and no reason to open it again for decades of the mileage this truck will see</td><td>A tidy, oil-tight engine with most of its compression back, for about a third of the money</td></tr>
+<tr><td>How it bites you</td><td>Only in the wallet, and in the fact that 196 pistons come in <strong>.030 / .040 / .060 only</strong> — there is no .020, so the first cut is a big one and a later rebuild has fewer sizes left</td><td><strong>This is the real risk on this engine.</strong> Your wet-test gains were +18, +16 and +22 psi — oil sealed those cylinders, which points at worn bores, not just tired rings. If the bores measure marginal and you re-ring anyway, you spend $1,300–2,400 and three weeks and finish at perhaps 100 psi. Then you pay for Path A regardless, and the re-ring parts are scrap</td></tr>
+<tr><td>Reversibility</td><td>None needed</td><td>Poor once started. The decision point is the measurement sheet, not the teardown</td></tr>
+</tbody>
+</table></div>
+<p><strong>What the evidence currently says.</strong> The plan defaults to Path A, and it should: every dry reading is 55–65% of theoretical, the wet gains point at the bores, and 0.020" of cam-lobe wear is routine on these engines — which alone pulls a cam and cam bearings into the job. Path B is not a fallback for a tired engine; it is the right answer only for an engine whose bores turn out to be better than its compression test suggested. That happens, which is why you measure. It is simply not where the money would be.</p>
+<p><strong>When Path B genuinely wins.</strong> If the four measurements come back clean, this is a 4-cylinder in a truck that will see a few thousand miles a year, not a race engine. A re-ring on a straight bore is proper work, not a shortcut, and the $2,000 you keep buys the disc conversion and the harness outright. Do not let the word "overhaul" talk you into machining a block that does not need it.</p>
+<aside class="callout"><span class="callout-label">What to say at the machine shop</span><p> Hand them the block and ask for one thing before any work: <em>"Measure and quote both ways. I need bore taper and out-of-round at top, middle and bottom of every cylinder; crank journal sizes and whether a polish will do; cam lobe lift against spec; and whether the deck is flat. Then quote me a bore-and-hone-to-.030 with the head done, and a hone-and-re-ring with the head done, as two separate numbers."</em> Any shop that will not do that is the wrong shop. Do not order the overhaul kit until those numbers are in your hand — that is why the kit is tagged <span class="ph ph-p1gate">P1-gate</span>.</p>
+</aside>
+<p>Note the third option, so it is named and dismissed on purpose: <strong>leave the engine alone and drive it.</strong> With cold leak-down at 55–80% and every cylinder under the 120 psi practical floor, that means a truck that burns oil, fouls plugs and is down on power — while sitting on a fresh frame, new brakes and a new harness. It is your money, but it puts a worn engine in the middle of an otherwise sorted truck, and pulling it later means undoing §5.7.</p>
 <p><strong>Parts — engine</strong></p>
 <div class="tablewrap"><table class="parts">
 <thead>
@@ -1155,7 +1212,15 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <td><input type="checkbox" class="chk part" aria-label="Bought"></td>
 <td><span class="ph ph-p1">P1</span></td>
 <td>H</td>
-<td>Fuel pump, 4-cyl mechanical (no vacuum booster — you're converting to electric wipers)</td>
+<td><strong>Fuel pump, 4-cyl dual-action with built-in vacuum pump</strong> — drives the wipers off the pump instead of the intake manifold. This is the part that makes vacuum wipers usable; do not substitute a plain pump</td>
+<td><a href="https://www.ihpartsamerica.com/store/SL326086C93.html">IHPA · SL326086C93</a></td>
+<td>$449.95 + $100 core</td>
+</tr>
+<tr data-part="sp-sp10172-nonvac-fallback">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Fuel pump, 4-cyl, <strong>no vacuum section</strong> — only if you abandon the vacuum wipers for the electric conversion</td>
 <td><a href="https://scoutparts.com/Fuel_Pump_4_Cylinder_Rebuilt_No_Glass_Bowl_863733R91_384853C91_326086C93_Scout_80_Scout_800/p10172">SP · SP10172</a></td>
 <td>call</td>
 </tr>
@@ -1642,6 +1707,10 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <li>Pressure-check with 3 psi of air and soapy water before fuel goes in.</li>
 </ol>
 <h3 id="68-electrical">6.8 Electrical</h3>
+<aside class="callout gate"><span class="callout-label">GATE 5 — wipers: keep the vacuum system</span><p> <strong>You are keeping the original vacuum wipers.</strong> That is a good call, and it is cheaper than the electric conversion this plan previously assumed — but only because of one part. The Scout 800’s wiper knob is a vacuum valve and its two Trico motors run on vacuum, and the reason vacuum wipers earned their bad reputation is that most cars fed them <em>intake manifold</em> vacuum, which collapses exactly when you open the throttle — climbing a hill in rain, the wipers stop. IH’s answer was a <strong>dual-action fuel pump with a vacuum section</strong> (IHPA SL326086C93), which keeps the wipers moving under load. Feeding them from the manifold instead is the version that fails, so <strong>do not economise on this pump.</strong></p>
+<p><strong>Bench-test both motors in week 1</strong>, before the harness is ordered: hand vacuum pump on the inlet barb, 15–20 in-Hg, and watch for a motor that sweeps smoothly, holds vacuum, and <em>parks</em> when the valve is released. The known weak point on the SKR-type motor is the parking valve — the turret with the smaller hose barb — so test park, not just sweep. A motor that sweeps but will not park is still a rebuild.</p>
+<p>Three outcomes: <strong>both good</strong> — buy the dual-action pump and hoses, done, and you save the $599.95 conversion. <strong>One or both weak</strong> — rebuild is $408.81 per side on your core (SP12537), so two bad motors cost more than the electric kit and the decision flips. <strong>You want modern wipers anyway</strong> — order New Port and the plain pump instead. Whichever way it goes, <strong>tell SSS before they build the harness</strong>: the vacuum path needs no wiper circuit at all.</p>
+</aside>
 <p><strong>Parts — electrical, ignition, charging, wipers</strong></p>
 <div class="tablewrap"><table class="parts">
 <thead>
@@ -1659,7 +1728,7 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <td><input type="checkbox" class="chk part" aria-label="Bought"></td>
 <td><span class="ph ph-p1">P1</span></td>
 <td>H</td>
-<td><strong>SSS OEM-pattern harness with ATO blade-fuse update</strong> — main dash, tail, engine, headlight sections; give them chassis #, build date, 4-cyl, 4-speed, alternator type, electric wipers</td>
+<td><strong>SSS OEM-pattern harness with ATO blade-fuse update</strong> — main dash, tail, engine, headlight sections; give them chassis #, build date, 4-cyl, 4-speed, alternator type, and <strong>vacuum wipers</strong> (no wiper circuit)</td>
 <td><a href="https://www.superscoutspecialists.com/modern-ato-type-fuse-wiring-harness-scout-scout-ii">SSS · "Wiring harness with ATO update"</a></td>
 <td>from $399 main; ~$1,350–1,450 all four</td>
 </tr>
@@ -1713,11 +1782,27 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 </tr>
 <tr data-part="new-port-engineering-ne6571sc800-438228b5">
 <td><input type="checkbox" class="chk part" aria-label="Bought"></td>
-<td><span class="ph ph-p1">P1</span></td>
-<td>H</td>
-<td><strong>Electric wiper conversion, 1965–71 Scout 800</strong> (2-speed motor, linkage, arms, blades, switch) — order early; direct from the maker avoids IHPA's 8-week lead</td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td><strong>Electric wiper conversion, 1965–71 Scout 800</strong> (2-speed motor, linkage, arms, blades, switch) — <strong>the fallback, not the plan.</strong> Order only if the vacuum motors fail the §6.8 bench test and you would rather not rebuild them. Buying direct avoids IHPA’s 8-week lead; tell SSS before the harness is built</td>
 <td><a href="https://newportwipers.com/product/1965-71-international-scout-800/">New Port Engineering · NE6571SC800</a></td>
 <td>from $599.95</td>
+</tr>
+<tr data-part="sp-sp12537-vacmotor-rebuild">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>M</td>
+<td>Vacuum wiper motor rebuild, <strong>your core, per side</strong> (RH 306408C91 / LH 306407C91) — order only for the side(s) that fail the bench test. <strong>Two motors, so ×2 is the worst case</strong></td>
+<td><a href="https://scoutparts.com/products/?product_id=12537&amp;view=product">SP · SP12537</a></td>
+<td>$408.81 ea</td>
+</tr>
+<tr data-part="vac-wiper-hose-kit">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Vacuum hose, fittings and clamps for the wiper circuit — pump to tee, tee to each motor, and the parking-valve line. Use hose rated for vacuum, not fuel line</td>
+<td>local</td>
+<td>~$40</td>
 </tr>
 <tr data-part="ab55028c">
 <td><input type="checkbox" class="chk part" aria-label="Bought"></td>
@@ -1784,7 +1869,7 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
 <li>Ignition: Pertronix in the rebuilt distributor per its sheet (voltage/coil requirements differ between Ignitor I/II/III — read the box); new cap, rotor, plugs gapped 0.030", wires. Static timing 4° BTDC to start.</li>
 <li>Gauges: solid-state 5 V CVR (SP18147) on the back of the temp/oil gauge with a dedicated ground; verify ~5 V out; ground the sender wire to confirm the fuel gauge swings full; each sender reads 73 Ω empty / 10 Ω full.</li>
 <li>Headlight relay harness fed from the alternator stud through its 30 A fuse.</li>
-<li>Electric wipers (New Port): motor in the vacuum-motor location, linkage, arms; wire per the kit; your original vacuum wipers and knob go on the shelf as spares.</li>
+<li id="wiper-gate-marker"><strong>Vacuum wipers (original):</strong> both motors into their factory locations, linkage and arms on, new vacuum hose from the fuel pump’s vacuum section to the tee and out to each motor. Nothing to wire — the wiper knob is a vacuum valve, not a switch. Test with the engine running at idle and again with a hand vacuum pump at the motor, and check that they <strong>park</strong> when switched off.</li>
 </ol>
 <h3 id="69-cooling-and-heat">6.9 Cooling and heat</h3>
 <p><strong>Parts — cooling and heater</strong></p>
@@ -2217,6 +2302,51 @@ table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decor
     links.forEach(function(a, i) { a.classList.toggle('active', i === cur); });
   }
   window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+})();
+</script>
+<script>
+(function () {
+  var bar = document.getElementById('filterbar');
+  var countEl = document.getElementById('filtercount');
+  if (!bar) return;
+  var rows = [].slice.call(document.querySelectorAll('table.parts tbody tr'));
+  if (!rows.length) return;
+  bar.hidden = false;
+
+  function bucket(tr) {
+    var tds = tr.children;
+    if (tds.length < 3) return 'later';
+    var ph = (tds[1].textContent || '').trim().toLowerCase();
+    var pri = (tds[2].textContent || '').trim().toUpperCase().charAt(0);
+    if (ph.indexOf('gate') > -1) return 'gate';
+    if (ph.indexOf('p2') > -1 || ph.indexOf('owned') > -1) return 'later';
+    if (ph.indexOf('p1') > -1) return pri === 'H' ? 'must' : 'soon';
+    return 'later';
+  }
+  var buckets = rows.map(bucket);
+
+  function apply(which) {
+    var shown = 0;
+    rows.forEach(function (tr, i) {
+      var hit = which === 'all' || buckets[i] === which;
+      tr.classList.toggle('filtered-out', !hit);
+      if (hit) shown++;
+    });
+    countEl.textContent = shown + ' of ' + rows.length + ' parts';
+    [].forEach.call(bar.querySelectorAll('button'), function (b) {
+      b.classList.toggle('on', b.getAttribute('data-filter') === which);
+    });
+    try { localStorage.setItem('scout800-parts-filter', which); } catch (e) {}
+  }
+
+  [].forEach.call(bar.querySelectorAll('button'), function (b) {
+    b.addEventListener('click', function () { apply(b.getAttribute('data-filter')); });
+  });
+
+  var saved = 'all';
+  try { saved = localStorage.getItem('scout800-parts-filter') || 'all'; } catch (e) {}
+  if (!/^(all|must|soon|gate|later)$/.test(saved)) saved = 'all';
+  apply(saved);
 })();
 </script>
 
