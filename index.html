@@ -1,0 +1,2127 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Scout 800 Overhaul Plan</title>
+<style>
+:root {
+  --ground:#FFFFFF; --surface:#FFFFFF; --surface-2:#F2F2F2; --ink:#000000; --ink-2:#333333; --muted:#6B6B6B;
+  --line:#DDDDDD; --line-2:#BBBBBB;
+  --mono:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --sans:system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased; }
+a { color:var(--ink); text-decoration:underline; text-decoration-color:var(--line-2); text-underline-offset:3px; }
+a:hover { text-decoration-color:var(--ink-2); }
+a:focus-visible, input:focus-visible { outline:2px solid var(--ink-2); outline-offset:2px; }
+.masthead { border-bottom:1px solid var(--line); background:var(--ground); }
+.masthead-inner { max-width:1180px; margin:0 auto; padding:32px 24px 24px; display:grid; grid-template-columns:1fr auto; gap:16px 32px; align-items:end; }
+.eyebrow { font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin:0 0 8px; }
+h1 { font-weight:600; font-size:clamp(28px, 4vw, 38px); line-height:1.15; margin:0; text-wrap:balance; }
+.sub { margin:10px 0 0; color:var(--ink-2); font-size:14.5px; max-width:70ch; }
+.sub + .sub { margin-top:4px; color:var(--muted); }
+.plate { font-family:var(--mono); font-size:12.5px; color:var(--ink-2); border:1px solid var(--line); padding:10px 14px; background:var(--surface); line-height:1.5; white-space:nowrap; }
+.plate b { color:var(--ink); font-weight:500; }
+.progress { margin-top:8px; font-family:var(--mono); font-size:12px; color:var(--muted); }
+.progress b { color:var(--ink); font-weight:500; }
+.layout { max-width:1180px; margin:0 auto; padding:0 24px 80px; display:grid; grid-template-columns:240px minmax(0,1fr); gap:48px; }
+nav.toc { position:sticky; top:0; align-self:start; max-height:100vh; overflow:auto; padding:28px 0; font-size:13.5px; }
+nav.toc ul { list-style:none; margin:0; padding:0; }
+nav.toc ul ul { margin:2px 0 8px; padding-left:12px; border-left:1px solid var(--line); }
+nav.toc li { margin:0; }
+nav.toc > ul > li > a { font-weight:600; display:block; padding:5px 0 3px; color:var(--ink); text-decoration:none; }
+nav.toc ul ul a { display:block; padding:2px 8px; color:var(--ink-2); text-decoration:none; }
+nav.toc ul ul a:hover { color:var(--ink); background:var(--surface-2); }
+nav.toc ul ul a.active { color:var(--ink); background:var(--surface-2); }
+main { min-width:0; padding-top:28px; }
+main > h2 { font-weight:600; font-size:26px; line-height:1.2; margin:56px 0 16px; padding-top:20px; border-top:1px solid var(--line-2); text-wrap:balance; }
+main > h2:first-child { margin-top:0; border-top:0; padding-top:0; }
+main h3 { font-weight:600; font-size:19px; line-height:1.25; margin:36px 0 12px; text-wrap:balance; }
+main p, main li { max-width:72ch; }
+main p { margin:0 0 14px; }
+main strong { font-weight:600; color:var(--ink); }
+main em { color:var(--ink-2); }
+main code { font-family:var(--mono); font-size:.9em; background:var(--surface-2); padding:1px 5px; }
+main ul { padding-left:22px; margin:0 0 16px; }
+main ul li { margin:0 0 8px; }
+main ol { list-style:none; counter-reset:step; padding:0; margin:0 0 20px; }
+main ol > li { counter-increment:step; position:relative; padding:9px 0 9px 44px; border-top:1px solid var(--line); max-width:80ch; }
+main ol > li:last-child { border-bottom:1px solid var(--line); }
+main ol > li::before { content:counter(step) "."; position:absolute; left:0; top:9px; font-family:var(--mono); font-size:14px; line-height:1.55; color:var(--muted); width:30px; font-variant-numeric:tabular-nums; }
+main ol > li.has-check { padding-left:74px; }
+main ol > li.has-check .chk { position:absolute; left:34px; top:12px; width:18px; height:18px; accent-color:#000000; cursor:pointer; margin:0; }
+main ol > li.done { color:var(--muted); }
+.callout { margin:18px 0 22px; padding:12px 16px; border:1px solid var(--line-2); background:var(--surface); max-width:80ch; }
+.callout p { margin:0 0 8px; }
+.callout p:last-child { margin-bottom:0; }
+.callout-label { display:block; font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-2); margin-bottom:6px; }
+.tablewrap { overflow-x:auto; margin:10px 0 26px; border:1px solid var(--line); background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; line-height:1.4; }
+th, td { text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line); }
+th { font-family:var(--mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--muted); font-weight:500; background:var(--surface-2); position:sticky; top:0; }
+tr:last-child td { border-bottom:0; }
+table.parts td:nth-child(6) { font-family:var(--mono); font-size:12.5px; white-space:nowrap; }
+table.parts td:nth-child(1) { width:28px; padding-right:0; }
+table.parts td:nth-child(3) { font-family:var(--mono); font-size:12.5px; text-align:center; }
+table.parts td:nth-child(4) { min-width:30ch; }
+table.parts td:nth-child(5) { white-space:nowrap; }
+table.parts tr.bought td { color:var(--muted); }
+table.parts tr.bought td:nth-child(4) { text-decoration:line-through; text-decoration-color:var(--line-2); }
+.chk { width:18px; height:18px; accent-color:#000000; cursor:pointer; margin:0; vertical-align:middle; }
+.ph { display:inline-block; font-family:var(--mono); font-size:11px; letter-spacing:.04em; padding:1px 6px; white-space:nowrap; border:1px solid var(--line-2); color:var(--ink-2); }
+.ph-p1 { color:var(--ink); border-color:var(--ink-2); }
+.foot { margin-top:64px; padding-top:18px; border-top:1px solid var(--line); font-size:13px; color:var(--muted); max-width:72ch; }
+@media (max-width: 1000px) {
+  .layout { grid-template-columns:1fr; gap:0; }
+  nav.toc { position:static; max-height:none; border-bottom:1px solid var(--line); margin-bottom:8px; columns:2; column-gap:32px; }
+  nav.toc > ul > li { break-inside:avoid; }
+  .masthead-inner { grid-template-columns:1fr; }
+  .plate { white-space:normal; }
+}
+@media (max-width: 640px) {
+  nav.toc { columns:1; }
+  body { font-size:15px; }
+  main ol > li { padding-left:36px; }
+  main ol > li.has-check { padding-left:64px; }
+  main ol > li.has-check .chk { left:28px; }
+}
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior:smooth; } }
+</style>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div>
+      <p class="eyebrow">Phase 1 · chassis &amp; running gear &nbsp;·&nbsp; Phase 2 · paint &amp; interior</p>
+      <h1>Scout 800 Overhaul Plan</h1>
+      <p class="sub">1967-model-year International Harvester Scout 800 Traveltop · VIN 781907G225943 · built 10/31/1966, Oakland district · factory color 5683 Aspen Green</p>
+      <p class="sub">Plan v1.2 — 4 September 2026. Living document: steps get checked off, prices drift, verify flags get cleared as you confirm things on the truck. v1.2: parts moved to the start of each section with H/M/L priority; engine confirmed 4-196; ratios 4.27 confirmed.</p>
+      <p class="progress" id="progress"></p>
+    </div>
+    <div class="plate">
+      <b>VIN</b> 781907G225943<br>
+      <b>Engine</b> 4-196E #3722 · original · Holley 1904<br>
+      <b>Trans</b> T-18/T-98 4-spd · Dana 20 twin-stick<br>
+      <b>Axles</b> Dana 27 F · Dana 44 Powr-Lok R · 4.27 confirmed<br>
+      <b>Paint</b> 5683 Aspen Green · PPG 43430
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="toc" aria-label="Contents">
+<ul>
+<li><a href="#0-how-to-read-this-plan">0. How to read this plan</a></li>
+<li><a href="#1-the-truck-as-documented">1. The truck as documented</a><ul>
+<li><a href="#11-as-built-line-setting-ticket-d-7408">1.1 As built (line setting ticket D 7408)</a></li>
+<li><a href="#12-as-found-april-2025-today">1.2 As found (April 2025 → today)</a></li>
+<li><a href="#13-verify-before-ordering-the-five-photographs">1.3 Verify before ordering — the five photographs</a></li>
+<li><a href="#14-what-the-compression-numbers-say">1.4 What the compression numbers say</a></li>
+</ul>
+</li>
+<li><a href="#2-schedule-six-months-to-driving">2. Schedule — six months to driving</a></li>
+<li><a href="#3-budget-and-priorities">3. Budget and priorities</a><ul>
+<li><a href="#31-budget-roll-up-parts-outside-services-excluding-what-you-already-own">3.1 Budget roll-up (parts + outside services, excluding what you already own)</a></li>
+</ul>
+</li>
+<li><a href="#4-tools-you-will-need-that-you-may-not-have">4. Tools you will need that you may not have</a></li>
+<li><a href="#5-phase-1-chassis-and-running-gear">5. Phase 1 — chassis and running gear</a><ul>
+<li><a href="#50-week-1-setup-and-documentation">5.0 Week 1: setup and documentation</a></li>
+<li><a href="#51-weeks-23-teardown-to-a-bare-frame">5.1 Weeks 2–3: teardown to a bare frame</a></li>
+<li><a href="#52-weeks-45-frame-finish">5.2 Weeks 4–5: frame finish</a></li>
+<li><a href="#53-weeks-57-axles-on-the-bench">5.3 Weeks 5–7: axles on the bench</a></li>
+<li><a href="#54-weeks-89-spring-under-conversion-and-rolling-chassis">5.4 Weeks 8–9: spring-under conversion and rolling chassis</a></li>
+<li><a href="#55-weeks-812-engine">5.5 Weeks 8–12: engine</a></li>
+<li><a href="#56-weeks-512-bench-parallel-clutch-t-18-dana-20-steering-box">5.6 Weeks 5–12 (bench, parallel): clutch, T-18, Dana 20, steering box</a></li>
+<li><a href="#57-weeks-1013-powertrain-into-the-chassis">5.7 Weeks 10–13: powertrain into the chassis</a></li>
+</ul>
+</li>
+<li><a href="#6-phase-1-tub">6. Phase 1 — tub</a><ul>
+<li><a href="#61-strip-and-map">6.1 Strip and map</a></li>
+<li><a href="#62-floor-pans-and-rust-repair">6.2 Floor pans and rust repair</a></li>
+<li><a href="#63-seal-prime-coat">6.3 Seal, prime, coat</a></li>
+<li><a href="#64-doors-and-glass">6.4 Doors and glass</a></li>
+<li><a href="#65-traveltop">6.5 Traveltop</a></li>
+<li><a href="#66-body-on">6.6 Body on</a></li>
+<li><a href="#67-fuel-system">6.7 Fuel system</a></li>
+<li><a href="#68-electrical">6.8 Electrical</a></li>
+<li><a href="#69-cooling-and-heat">6.9 Cooling and heat</a></li>
+<li><a href="#610-exterior-and-interior-phase-1-scope">6.10 Exterior and interior, Phase 1 scope</a></li>
+</ul>
+</li>
+<li><a href="#7-commissioning">7. Commissioning</a></li>
+<li><a href="#8-phase-2-paint-and-interior">8. Phase 2 — paint and interior</a><ul>
+<li><a href="#81-decide-the-color">8.1 Decide the color</a></li>
+<li><a href="#82-body-on-repaint-driver-quality">8.2 Body-on repaint, driver quality</a></li>
+<li><a href="#83-interior">8.3 Interior</a></li>
+</ul>
+</li>
+<li><a href="#9-sources">9. Sources</a></li>
+</ul>
+
+</nav>
+  <main>
+
+<h2 id="0-how-to-read-this-plan">0. How to read this plan</h2>
+<p><strong>Phase 1</strong> takes the truck from where it is today to a sorted, safe, weather-tight driver in roughly six months of weekend work: body off, frame blasted and coated, spring-under conversion at near-stock height on the 33s, front discs, all-new rear brakes, engine overhauled, 4-speed and Dana 20 resealed, new harness, both tanks, heater back in, floors repaired, everything under the body coated, Traveltop sealed. Exterior paint and the cabin are deliberately deferred.</p>
+<p><strong>Phase 2</strong> is paint and interior, done body-on, whenever you decide the truck has earned it.</p>
+<p>Conventions used throughout:</p>
+<ul>
+<li>Steps are numbered because order matters. A step that says <strong>do not skip</strong> is load-bearing for a later step.</li>
+<li><strong>Torque values are for lubricated threads</strong> unless marked dry — that is how IH published them (IHPA forum, torque-specs thread). Where a figure could not be verified against the CTS-2302 service manual it is marked <em>(verify in CTS-2302)</em>. Buy the manual first; it is line one of the parts list.</li>
+<li>Callouts: <strong>GATE</strong> = a decision you make with data from the truck before spending money. <strong>VERIFY</strong> = something to confirm on the truck before ordering. <strong>SAFETY</strong> = a hazard that has actually hurt people doing this work.</li>
+<li>Parts are listed at the start of the section that uses them. Each row gives phase, priority (H/M/L — key in §3), the item, a linked source (vendor · part number), and the price shown on the vendor page on 3 Sep 2026. "Verified" means the product page itself was fetched and matched; "unverified" means it came from a category page or search result — call before ordering those. Prices will drift; treat them as ±15%.</li>
+<li>Vendors: <strong>IHPA</strong> = IH Parts America, Grass Valley CA, 530-274-1795. <strong>SSS</strong> = Super Scout Specialists, Ohio, 937-525-0000. <strong>SP</strong> = scoutparts.com, 1-888-288-0550. <strong>AS</strong> = Anything Scout. <strong>TK</strong> = Torque King 4x4.</li>
+</ul>
+<h2 id="1-the-truck-as-documented">1. The truck as documented</h2>
+<h3 id="11-as-built-line-setting-ticket-d-7408">1.1 As built (line setting ticket D 7408)</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Item</th>
+<th>As built</th>
+<th>What it means for the plan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>Scout 800, 100" WB, 3,900 GVW, Traveltop, individual front seats + full-width rear seat, dual 10-gal side tanks</td>
+<td>Early (1965–67) 800: Scout 80-style grille screen, 1967-only hood emblem, 5-or-7-bolt Traveltop — count yours</td>
+</tr>
+<tr>
+<td>Engine</td>
+<td>"4CYL HC", code 12115, engine #3722</td>
+<td><strong>Confirmed 4-196</strong> — the block pad is stamped <code>4-196E</code> with serial <code>3722</code>, matching the handwritten engine number on the line ticket. Original engine. The certification plate on the cowl shows 86 net / 93.4 gross hp @ 4400, which are the 152's published figures — the plate was stamped with the model's base rating, not the optional engine; the block wins. The <code>E</code> suffix is not documented in any fetched source; it most plausibly marks the emission-package build (the ticket carries the exhaust-emission line). Practical consequences: 4.125" bore × 3.656" stroke, 8.02:1, ~140 psi theoretical; Holley <strong>1904</strong> big-bore (1-9/16") carburetor on this early build (the 1920 replaced it later); 196 gasket sets; 196 pistons available in .030/.040/.060 only (no .020)</td>
+</tr>
+<tr>
+<td>Emissions</td>
+<td>EXH EMISSION CONTROL 12825</td>
+<td>California air-injection package (smog pump, rail, check valve, PCV). Pre-1976, so smog-exempt in CA — keep or delete is your call; the manifold will have rail bosses either way</td>
+</tr>
+<tr>
+<td>Transmission</td>
+<td>T-14 = Borg-Warner T-90 3-speed</td>
+<td><strong>Replaced</strong> by a previous owner with a granny-gear 4-speed (§1.3)</td>
+</tr>
+<tr>
+<td>Transfer case</td>
+<td>TC-145 = Dana 20, 2.00:1 low, factory twin-stick</td>
+<td>Still in place behind the 4-speed</td>
+</tr>
+<tr>
+<td>Front axle</td>
+<td>FA-14 = Dana 27AF, 2,000 lb, closed knuckle, Warn 10-spline 6-bolt hubs, <strong>4.27 confirmed</strong></td>
+<td>Keep. Rebuild + disc conversion</td>
+</tr>
+<tr>
+<td>Rear axle</td>
+<td>RA-23 = Dana 44, <strong>Powr-Lok limited slip, tapered two-piece 19-spline shafts</strong>, 54.75" WMS, <strong>4.27 confirmed</strong></td>
+<td>Keep. Full outer-end service, Powr-Lok rebuild, all-new 11x1¾ drums</td>
+</tr>
+<tr>
+<td>Brakes</td>
+<td>Dual-circuit master cylinder (new for '67), 10x2 front / 11x1¾ rear drums, rear-wheel parking brake</td>
+<td>Disc/drum master and prop valve come with the CPT disc kit</td>
+</tr>
+<tr>
+<td>Electrical</td>
+<td>12 V neg. ground, 32 A alternator with external regulator</td>
+<td>Being replaced entirely</td>
+</tr>
+<tr>
+<td>Clutch</td>
+<td>Hydraulic (firewall master, slave on bellhousing) — 1961–68 80/800</td>
+<td>New master, slave, hose, 10" clutch, 15/16" 10-spline disc</td>
+</tr>
+<tr>
+<td>Steering</td>
+<td>Manual gear, inside the frame rail, ¾"-36 input, 1" ball drag link</td>
+<td>Rebuild or exchange the box; renew ball ends</td>
+</tr>
+<tr>
+<td>Wheels/tires</td>
+<td>15 x 5.50K, 8.45-15 (~28")</td>
+<td>Now 33x10.5R15 BFG KM3 on generic 15x8 steel wheels (backspacing unmeasured)</td>
+</tr>
+<tr>
+<td>Paint</td>
+<td>5683 Aspen Green = PPG/Ditzler 43430, solid</td>
+<td>Phase 2</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="12-as-found-april-2025-today">1.2 As found (April 2025 → today)</h3>
+<p>Runs and drives. Spring-over-axle lift (no regear), driveline angles poor. 4-speed leaks and is not smooth in some gears; clutch slips and shifts hard. Brakes weak, pull, soft pedal. Only one fuel tank fitted. Aftermarket harness half-installed and hanging from the dash; glovebox door and heater box removed. Subaru seats loose on the floor. Window regulators seized, seals gone, Traveltop leaks at the body seam and rear glass. Front bumper missing; rear present. Floor pans holed at the front corners both sides. Frame reported sound. Paint cracked and failed, worst on the rear shell. All glass good.</p>
+<p>Cold compression, dry / wet: #1 95/113, #2 88/95, #3 80/96, #4 95/117. Cold leak-down (% leakage): 70 / 75 / 55 / 80.</p>
+<h3 id="13-verify-before-ordering-the-five-photographs">1.3 Verify before ordering — the five photographs</h3>
+<aside class="callout verify"><span class="callout-label">VERIFY — block pad: RESOLVED 4 Sep 2026</span><p> Stamped <code>4-196E 3722</code>. Engine is the original 4-196. Carburetor: Michael recalls a Holley <strong>1904</strong> on the engine. That is consistent with a late-1966 196 — the 1904 was built in a big-bore (1-9/16") version for the 152 and 196 (scoutparts lists it for 1966–67 Scout 800s; the 1920 came later). A 1904 rebuild kit is therefore the right kit. Still read the list number on the airhorn so the kit's float/gaskets match, and confirm the throttle-body flange is the larger 196 pattern rather than a 152 carb on an adapter.</p>
+<p><strong>VERIFY — transmission identity.</strong> Three checks: (1) casting number on the case — <code>13-01</code> family = T-18, <code>13-09</code> = T-19, <code>T18-1P</code>/<code>1301-174-</code> sometimes appear on a T-98; (2) metal tag under one of the shifter-tower bolts, driver side; (3) definitive: jack one rear wheel, T-case in 2H, mark the driveshaft, count driveshaft turns per crank revolution in 1st — ~6.3 = wide-ratio T-18, ~6.4 = T-98, ~4.0 = T-18A/C or T-19A, ~5.1 = T-19. Also measure the input shaft: the 4-cyl bell takes a <strong>15/16" 10-spline</strong> input; if yours is 1-1/8" or 1-1/4" someone fitted a V8-family box and the clutch kit changes. Photograph the transmission-to-T-case adapter plate and the bellhousing (IH 860014R1 is the hydraulic "pancake" 4-cyl bell).</p>
+<p><strong>VERIFY — axle ratios: RESOLVED 4 Sep 2026.</strong> Both axles stamped 4.27, confirmed by wheel-turn / driveshaft count. No regear; 33s give an effective ~3.68 final drive. Still to read: the <strong>transfer case serial tag</strong> (IHPA's Dana 20 kit splits at serial G435971 — the chassis serial suggests the early kit, but the tag on the case is what counts).</p>
+<p><strong>VERIFY — what the spring-over job left behind (not axle identity — that is settled).</strong> Four things decide the suspension order: (1) <strong>Resolved 4 Sep 2026: the original spring-under perches were removed</strong> — both axles need new weld-on perches; inspect the tube underside where they were cut off for gouges or grinder-thinned spots and locate the new perches clear of any damage. (2) Are the SOA perches welded to the tube or up against the cast center? That sets how they get cut off. (3) <strong>Shackle bushing sleeve width</strong> — the CPT kit is ordered as 1.875" (1961–67) or 2" (1968–71); a previous owner who changed hangers or shackles can have changed this, so measure the sleeve, don't assume. (4) <strong>Dana 27 tube OD</strong> with calipers at the perch location — no published figure exists, and the front U-bolts and perches are sized to it (the Dana 44 is 2.75"). Also look at the front driveshaft at the crossmember and the rear slip-yoke engagement.</p>
+<p><strong>ASSUMPTION — wheels (4 Sep 2026).</strong> The wheels are 15x8 (rim stamp <code>15X8 NT12 2 831</code>; the stamp carries size only, not offset). Backspacing and center bore have not been measured; <strong>the plan proceeds on the assumption the existing wheels work.</strong> The assumption gets tested for free at §5.3 step 7 (caliper clearance) and §5.4 step 5 (fender clearance at full bump and lock) before anything is painted — if either fails, the fallback is a set of 15x8 steel wheels at 3.75" backspace, not trimming. Width isn't the deciding number — <strong>backspacing</strong> is, and generic 15x8 steelies run anywhere from 3.5" to 4.5". Wheel face down, straightedge across the back lip, tape to the hub mounting face. Target for 33x10.50 on a Dana 27: <strong>3.75–4.0"</strong>; less rubs the fender lip at lock, more hits the tie rod and spring. Center bore must be ≥4.20" to clear the Warn hub body. Caliper clearance with the disc kit can only be checked by test-fitting (§5.3 step 7).</p>
+</aside>
+<h3 id="14-what-the-compression-numbers-say">1.4 What the compression numbers say</h3>
+<p>Theoretical cranking pressure from the 196's 8.02:1 compression ratio is ~140 psi; IHPA's practical floor for a hot SV-family engine is 120 psi with no more than 10 psi spread. Your best wet reading (117) is under that floor and every dry reading is 55–65% of theoretical.</p>
+<p>The wet gains are the diagnostic: #1 +18, #3 +16, #4 +22 — oil sealed those cylinders, so rings and bores are the leak path. #2 gained only 7 psi from the lowest base, so oil could not fix #2: that is a <strong>valve-seat or head problem</strong>, and on this engine family an IHPA moderator estimates more than half the heads he sees are cracked between a valve seat and the plug hole. #2 gets a Magnaflux and pressure test before any money goes into the head.</p>
+<p>The cold 55–80% leakage figures overstate the truth — cold bores at minimum clearance with no oil film, hydraulic lifters that have bled down and may hold a valve a hair off its seat, and a very real chance the test was not at exact TDC-compression. Reasoned estimate for a <strong>warm</strong> test with all plugs out, throttle wide open, charged battery: <strong>~105–115 psi on #1/#4, ~95–105 on #3, ~90–100 on #2</strong>, and warm leak-down in the 25–45% band on 1/3/4 with #2 still worst. That is still "overhaul likely" territory, not "tune-up" territory.</p>
+<aside class="callout gate"><span class="callout-label">GATE 1 — engine scope</span><p> The warm test is worth doing only to confirm #2 as the head cylinder. The plan assumes a <strong>full overhaul</strong> (bore/hone to the next oversize, new pistons/rings, crank polish or grind, cam bearings, timing gears, valve job) because the wet gains say the bores are worn, not just the rings, and 0.020" cam-lobe wear is routine on these. The re-ring branch survives only if the machine shop measures bores within 0.005" taper/out-of-round and the crank within spec — decide at §6.4 step 6 with the block on the bench, not before.</p>
+</aside>
+<h2 id="2-schedule-six-months-to-driving">2. Schedule — six months to driving</h2>
+<p>The critical path is not your weekends. It is three lead times: machine-shop turnaround on the engine (typically 3–6 weeks), the harness build (SSS: weeks; IHPA wiper kit: 8 weeks), and frame blasting. The plan front-loads the teardown so those clocks start in week 2.</p>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Weeks</th>
+<th>Milestone</th>
+<th>What ships out / arrives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Remaining §1.3 checks (transmission ID, T-case serial, spring area, wheels), manual and parts order #1 in, garage set up, truck on stands</td>
+<td>Order CTS-2302; engine kit (196) deferred until the machine shop reports sizes</td>
+</tr>
+<tr>
+<td>2–3</td>
+<td>Interior, Traveltop, tanks, harness, glass-in-doors out; engine + trans out; body off</td>
+<td>Engine to machine shop (week 3). Harness ordered with build date/chassis #. Wiper kit ordered</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Frame stripped of everything, inspected, to blaster</td>
+<td>Frame out; axles on stands</td>
+</tr>
+<tr>
+<td>5–7</td>
+<td>Axles: Dana 27 rebuild + discs, Dana 44 outer ends + Powr-Lok + brakes; T-18 and Dana 20 on the bench</td>
+<td>Frame back, epoxy + topcoat</td>
+</tr>
+<tr>
+<td>8–9</td>
+<td>Perches welded, springs/shackles/shocks on, steering, brake hard lines, rolling chassis</td>
+<td>Engine back from machine shop</td>
+</tr>
+<tr>
+<td>10–12</td>
+<td>Engine assembly; clutch/bell/trans/T-case stacked in; driveshafts checked</td>
+<td>Driveshaft to shop if length changed</td>
+</tr>
+<tr>
+<td>8–13 (parallel)</td>
+<td>Tub: floors, rust repair, seam seal, epoxy, underside Raptor, engine bay black</td>
+<td>Body panels arrived week 4</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Body on frame</td>
+<td>—</td>
+</tr>
+<tr>
+<td>15–18</td>
+<td>Fuel system, harness, ignition/charging, cooling + heater, wipers, gauges</td>
+<td>—</td>
+</tr>
+<tr>
+<td>19–21</td>
+<td>Doors: regulators, channels, seals; Traveltop on with new seals; glass; bumper; seats bolted</td>
+<td>—</td>
+</tr>
+<tr>
+<td>22–24</td>
+<td>Commissioning: fluids, first start, cam break-in, brake bedding, alignment, 500-mile shakedown</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p>Realistic slack: two to four weeks. The items most likely to slip are machine-shop turnaround and any NLA part (the 4-cyl exhaust manifold kit is already NLA; a local exhaust shop covers the rest).</p>
+<h2 id="3-budget-and-priorities">3. Budget and priorities</h2>
+<p><em>Parts are listed at the start of the section where they are used (§5–§8), tagged <strong>P1</strong> (Phase 1 must-have), <strong>P1-gate</strong> (order only after the gate or check it names), <strong>P2</strong> (Phase 2), or <strong>owned</strong>. Priority: <strong>H</strong> = safety-critical, blocks a later step, or long lead — order first; <strong>M</strong> = needed for Phase 1, short lead — order when you reach the section; <strong>L</strong> = optional, a gated fallback, a tool you can borrow, or Phase 2. Prices are what the linked page showed on 3 Sep 2026.</em></p>
+<h3 id="31-budget-roll-up-parts-outside-services-excluding-what-you-already-own">3.1 Budget roll-up (parts + outside services, excluding what you already own)</h3>
+<div class="tablewrap"><table>
+<thead>
+<tr>
+<th>Block</th>
+<th>Low</th>
+<th>High</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Documents, coatings, consumables</td>
+<td>$900</td>
+<td>$1,200</td>
+<td>epoxy ×2 gal, Raptor ×2, chassis black, seam sealer</td>
+</tr>
+<tr>
+<td>Engine overhaul (parts + machine shop)</td>
+<td>$3,500</td>
+<td>$5,500</td>
+<td>kit $2,320–2,700 + machining $800–2,500; add carb/ignition/cooling below</td>
+</tr>
+<tr>
+<td>Ignition, charging, cooling</td>
+<td>$800</td>
+<td>$1,000</td>
+<td>Pertronix, cap/rotor, alternator, radiator, hoses, pump</td>
+</tr>
+<tr>
+<td>Clutch, T-18 kit, Dana 20 kit, oils</td>
+<td>$1,300</td>
+<td>$1,600</td>
+<td></td>
+</tr>
+<tr>
+<td>Front axle rebuild + hubs + disc kit</td>
+<td>$1,800</td>
+<td>$2,100</td>
+<td></td>
+</tr>
+<tr>
+<td>Rear axle service + Powr-Lok + brakes + cables</td>
+<td>$1,100</td>
+<td>$1,500</td>
+<td>+ $250 if the master kit is needed</td>
+</tr>
+<tr>
+<td>Brake lines/hoses/fluid</td>
+<td>$350</td>
+<td>$450</td>
+<td></td>
+</tr>
+<tr>
+<td>Suspension kit, perches, U-bolts, stops, steering renewal</td>
+<td>$2,300</td>
+<td>$3,200</td>
+<td>+ $1,250 if the steering box is exchanged</td>
+</tr>
+<tr>
+<td>Frame blast + coat (outsourced blast, DIY coat)</td>
+<td>$400</td>
+<td>$800</td>
+<td>powder coat instead: $900–1,500</td>
+</tr>
+<tr>
+<td>Body sheet metal, mounts, seals, doors, bumper, grille, glovebox</td>
+<td>$2,600</td>
+<td>$3,400</td>
+<td></td>
+</tr>
+<tr>
+<td>Harness, switches, relays, wipers, gauges</td>
+<td>$2,500</td>
+<td>$2,800</td>
+<td></td>
+</tr>
+<tr>
+<td>Fuel (selector, necks, lines)</td>
+<td>$400</td>
+<td>$500</td>
+<td>tanks owned</td>
+</tr>
+<tr>
+<td>Heater + cooling parts</td>
+<td>$900</td>
+<td>$1,000</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Phase 1 total</strong></td>
+<td><strong>$18,800</strong></td>
+<td><strong>$25,000</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Phase 2: paint (shop, driver-quality single-stage, you deliver it in epoxy)</td>
+<td>$6,000</td>
+<td>$10,000</td>
+<td>DIY materials alone $1,200–1,800</td>
+</tr>
+<tr>
+<td>Phase 2: interior</td>
+<td>$1,900</td>
+<td>$2,600</td>
+<td>+ upholstery shop labor if they do the seats</td>
+</tr>
+<tr>
+<td><strong>Phase 2 total</strong></td>
+<td><strong>$8,000</strong></td>
+<td><strong>$12,600</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="4-tools-you-will-need-that-you-may-not-have">4. Tools you will need that you may not have</h2>
+<p>Engine hoist (2-ton) and load leveler; engine stand; 4 tall jack stands (6-ton) plus 4 shorter ones; two 4×4 × 8 ft posts and 4 sawhorses (or 4 camper jacks) for the tub; transmission jack or ATV jack; ¾"-drive breaker bar and a 250 ft-lb torque wrench (rear hub nuts, pinion nuts); ½"-drive click wrench 20–150 ft-lb and a 3/8"-drive in-lb wrench (bearing preloads); dial indicator with magnetic base (end play, runout, ring/pinion backlash); micrometer 3–4" and a bore gauge, or let the machine shop measure; spring scale (kingpin preload); 2-1/16" spindle socket; OTC 7394 hub puller; bearing race drivers; brass drift; hydraulic press access (axle bearings, u-joints — a local shop will press for $20); double-flare tool for 3/16" and 5/16"; tubing bender; vacuum brake bleeder or a helper; digital angle finder (pinion/caster); 4-ft level and plumb bob (axle centering); MIG with 0.023" wire and 75/25; 4½" grinder with cutoff, flap and wire wheels; HVLP gun with 1.8 tip (epoxy) and a schutz gun (Raptor); half-mask respirator with organic-vapor cartridges (isocyanates in every 2K product); leak-down tester and compression gauge; multimeter and a test light; heat gun; a label maker and 200 zip bags.</p>
+<h2 id="5-phase-1-chassis-and-running-gear">5. Phase 1 — chassis and running gear</h2>
+<h3 id="50-week-1-setup-and-documentation">5.0 Week 1: setup and documentation</h3>
+<p><strong>Parts — before you start</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="ihpa-bb-cts-2302-c0befc88">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Service manual, 1961–71 Scout 80/800 (CTS-2302, 984 pp) — <strong>buy first</strong></td>
+<td><a href="https://www.ihpartsamerica.com/store/bb-cts-2302.html">IHPA · BB-CTS-2302</a></td>
+<td>$79.95</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Photograph everything, everywhere, before a single bolt comes out: 360° exterior, every panel gap, under the dash, engine bay from six angles, underside from each corner, each spring and shackle, every wire connector. Two hundred photos is normal. They are your reassembly manual for the things the CTS-2302 does not cover.</li>
+<li>Finish the open §1.3 checks (transmission ID, T-case serial, spring area, wheel backspacing) and send them here. Engine is confirmed 4-196 and ratios 4.27; the transmission and T-case checks release the clutch kit, T-18 kit, Dana 20 kit, and rear cable orders.</li>
+<li>Order every part marked P1 in the per-section parts tables (§5–§6) that is not gated — H priority first. Ask SSS to start the harness (they need chassis number, build date, engine, transmission, alternator, and that you're running electric wipers and a 3-wire alternator). Order the New Port wiper kit.</li>
+<li>Drain and dispose of the fuel from the remaining tank (siphon into cans; a nearly empty tank is far more dangerous than a full one — see SAFETY below). Disconnect the battery and remove it.</li>
+<li>Put the truck on four 6-ton stands under the frame, wheels off, at working height. Roll the wheels/tires out of the way — they are not needed again until §7.</li>
+</ol>
+<aside class="callout safety"><span class="callout-label">SAFETY — fuel tanks</span><p> The saddle tanks live inside the body next to the seats. Never weld or grind near a tank that has held fuel. Both tanks and their filler hoses come out before any floor-pan cutting. Store the old steel tank outdoors, open.</p>
+</aside>
+<h3 id="51-weeks-23-teardown-to-a-bare-frame">5.1 Weeks 2–3: teardown to a bare frame</h3>
+<p><strong>Order of removal (each step bags its own hardware, labeled):</strong></p>
+<ol>
+<li><strong>Interior.</strong> Subaru seats (unbolted — just lift). Shift boots and both shift levers (trans and twin-sticks) so the tub will clear later. Dash: unplug the loose harness at every point, photograph, and pull the whole aftermarket harness out — it is not being reused. Remove the instrument cluster you have already cleaned (store it wrapped). Pull the remaining tank: filler hose, vent, sender wire, fuel line, straps. Remove the tank compartment sheet metal only if rotted.</li>
+<li><strong>Traveltop.</strong> Remove any fiberglass/insulation liner. Fold the visors down. Find the 5–7 bolts per side into the body flange (rear ones are the rustiest — penetrant for days, expect to cut one) and the 4 Phillips screws through the windshield header. Disconnect the dome/liftgate wiring at the frame connector (it pulls up through the fender). Three people: pop the front loose upward, block each side behind the doors with wood, lift and walk it to a pair of sawhorses padded with carpet. Store it upside down on the sawhorses, out of the sun. Count the bolts — it decides which Traveltop parts fit later.</li>
+<li><strong>Doors.</strong> Off at the hinges (hinge screws are cheap; don't fight them). Store standing on their bottom edge on carpet.</li>
+<li><strong>Glass.</strong> Windshield stays in the frame for now; it comes out in §6.9 when the cowl is being worked. Traveltop glass stays in the top until §8.3.</li>
+<li><strong>Hood.</strong> Two people; mark the hinge positions with a scribe first.</li>
+<li><strong>Engine and transmission as a unit</strong> (the pancake bell makes separating them in the truck miserable): drain oil, coolant, trans, and T-case. Radiator out (hoses, two bolts to the core support). Air cleaner, carb linkage, choke cable, fuel line, heater hoses (if any), exhaust at the manifold donut (bolts will snap — cut the pipe instead; the manifold bolt kit is on order), starter wiring, alternator, distributor wires, oil-pressure and temp senders, clutch slave (leave it on its hose, tie it up), speedometer cable at the T-case, both driveshafts (mark yoke orientation with paint before unbolting; bag the straps), rear trans mount, both engine mounts. Hoist with a load leveler; angle nose-up steeply to clear the T-case out under the firewall. Set the assembly on a pallet; separate T-case, then trans, then bell, then flywheel on the ground (bell bolts 105 ft-lb coming out — long breaker bar).</li>
+</ol>
+<aside class="callout safety"><span class="callout-label">SAFETY — hoist</span><p> The engine-plus-T-18-plus-Dana 20 assembly is ~800 lb hanging well off-center. Use a leveler, chain to the head bolts through proper lifting eyes (not the manifold bolts), and never let anyone under it.</p>
+</aside>
+<ol style="counter-reset: step 6">
+<li><strong>Body off.</strong> Disconnect: steering column at the box coupler (the column stays with the tub), brake master cylinder from the firewall (leave it on the frame side if it's frame-mounted — on an 800 it's firewall-mounted, so unbolt the pedal pushrod and cap the lines), clutch master (same), parking brake cable at the lever, throttle linkage, wiring at the bulkhead (already gone), ground straps, heater/defroster ducts. Then the <strong>9 body mount bolts</strong>: front center under the radiator core support, then four pairs down the tub. Bag each mount's shims and label them by position — they set the door gaps. Lift: bottle-jack front and rear of the tub separately, slide the 4×4s through crosswise under the rockers (never under the floor pans), lower the frame off the stands and roll it out, then lower the tub onto the sawhorses. Four people or two hoists; it is heavier than it looks.</li>
+<li><strong>Strip the frame.</strong> Springs and shackles (photograph the SOA perches first — you may want the old front shackle geometry as a reference), both axles complete (roll them away on furniture dollies), steering box and drag link, brake lines and hoses (cut them; all new), pedal assembly, clutch/brake hydraulics, parking brake cross-shaft and cables, fuel lines, exhaust hangers, bumper stubs (cut off and grind flush the aftermarket brackets on the frame horns — the repro bumper uses the original bolt holes and stand-offs), the old body mount cups. What's left is a bare frame.</li>
+<li><strong>Inspect the frame</strong> before it goes to the blaster: put a straightedge along each rail top; string diagonals from the front spring hanger to the opposite rear hanger — the two diagonals should match within 1/8". Look hard at the rear spring hangers, the front shackle hangers (they crack), the steering box mount, and the crossmember the front driveshaft passes. Poke every boxed section. Photograph the results.</li>
+</ol>
+<aside class="callout gate"><span class="callout-label">GATE 2 — frame</span><p> If diagonals are out by more than ¼" or any hanger is cracked, that is a frame-shop job (straightening, hanger replacement) before blasting. Expect not to need it — you reported minimal rust — but check before you pay to blast.</p>
+</aside>
+<h3 id="52-weeks-45-frame-finish">5.2 Weeks 4–5: frame finish</h3>
+<p><strong>Parts — frame coatings</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="deeb2607">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>SPI Epoxy Primer, black, gallon + activator (frame, underside, engine bay, floors) — plan 2 gal</td>
+<td><a href="https://www.southernpolyurethanes.com/pricing">SPI</a></td>
+<td>$154.74/gal MSRP</td>
+</tr>
+<tr data-part="eastwood-33991zp-11175z-b65836d7">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Eastwood Extreme Chassis Black satin, gallon (frame topcoat, suspension) + 2 aerosols for touch-up</td>
+<td><a href="https://www.eastwood.com/eastwood-extreme-chassis-black-paint.html">Eastwood · 33991ZP / 11175Z</a></td>
+<td>$193.97 / $25.99</td>
+</tr>
+<tr data-part="891faa3e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>L</td>
+<td>POR-15 semi-gloss black qt + Metal Prep (inside boxed frame sections only, applied with a wand)</td>
+<td><a href="https://www.tptools.com/POR-15-Rust-Preventive-Paint-Semi-Gloss-Black-Qt,6760.html">TP Tools</a></td>
+<td>$72 + $25</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Blasting: closest is Bear Blasting, Simi Valley, (805) 791-1669; Noel Welding in Chatsworth blasts and powder coats under one roof, (747) 216-1580. A mobile dustless blaster (California Auto Body, Reseda, (818) 853-4204) will do it in your driveway. Ask for a fine profile (80–100 grit equivalent), all faces including inside the boxed rails as far as they can reach, and tell them it gets epoxy the same day — coastal flash rust starts in hours.</li>
+<li>Same day: blow off, wipe with wax-and-grease remover, two coats SPI black epoxy, 30 min between coats, 1.8 tip, 2K respirator. Inside the boxed rails: POR-15 through a 360° wand before the epoxy cures if you can reach; otherwise after.</li>
+<li>Within the epoxy's recoat window (check the SPI tech sheet, generally up to 7 days without scuffing): topcoat with Eastwood Extreme Chassis Black satin (or SPI single-stage satin black). Satin, not gloss — gloss shows every weld.</li>
+<li>Powder-coat alternative (Noel, Andrews, Pacific Powder in Oxnard): specify zinc-rich primer powder plus satin black top powder; mask the spring-hanger bores and the steering box pad. Cost $900–1,500 including blast. You lose easy touch-up; you gain the hardest finish. Given you will be welding perches to the axles but <strong>not</strong> to the frame, either finish works — pick paint if you expect to add brackets later.</li>
+<li>While it cures: new body mount cups are in the SP10065 kit. Test-fit each cup bolt in its frame hole — chase the threads (they're captive nuts in the rails; a broken one becomes a weld-in nut plate now, not with the body on).</li>
+</ol>
+<h3 id="53-weeks-57-axles-on-the-bench">5.3 Weeks 5–7: axles on the bench</h3>
+<p>Do the rear first — it has fewer variables.</p>
+<p><strong>Parts — Dana 44 rear</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="ihpa-d44-tabrg-kit-b00ddb8b">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Tapered axle bearing, race, outer + inner seal set (ask: per side or per axle)</td>
+<td><a href="https://www.ihpartsamerica.com/store/d44-tabrg-kit.html">IHPA · D44-TABRG-KIT</a></td>
+<td>$229.95</td>
+</tr>
+<tr data-part="tk-qu15043-qu15102-549e23c1">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Hub keys ×2 + end-play shim set</td>
+<td><a href="https://torqueking.com/products/15043-qu15043-rear-wheel-hub-key-for-dana-44-and-dana-53-rear-axles">TK · QU15043 / QU15102</a></td>
+<td>$5.25 / $10.98</td>
+</tr>
+<tr data-part="sp-sp13467-1d2e5451">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Powr-Lok clutch rebuild kit with friction modifier</td>
+<td><a href="https://scoutparts.com/products/?product_id=13467&amp;view=product">SP · SP13467</a></td>
+<td>$152.52</td>
+</tr>
+<tr data-part="ihpa-wshr-nut-seal-kit-0c5513a4">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Pinion seal service kit</td>
+<td><a href="https://www.ihpartsamerica.com/store/wshr-nut-seal-kit.html">IHPA · WSHR-NUT-SEAL-KIT</a></td>
+<td>$24.95</td>
+</tr>
+<tr data-part="ihpa-d44-mohkit-c950cf1c">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Dana 44 master overhaul kit (only if carrier/pinion bearings show pitting at §5.3)</td>
+<td><a href="https://www.ihpartsamerica.com/store/d44-mohkit.html">IHPA · D44-MOHKIT</a></td>
+<td>$249.95</td>
+</tr>
+<tr data-part="ihpa-sii-brk-kit-std-35-8777c55b">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Rear brake kit, standard, 11x1¾ option (shoes, hardware, strut springs, adjusters)</td>
+<td><a href="https://www.ihpartsamerica.com/store/SII-BRK-KIT-STD.html">IHPA · SII-BRK-KIT-STD +$35</a></td>
+<td>$164.95</td>
+</tr>
+<tr data-part="ihpa-sii-brk-whlcyl-rr-e-10-be6e50bc">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Rear wheel cylinders L+R, <strong>Scout 800 bore option</strong></td>
+<td><a href="https://www.ihpartsamerica.com/store/sii-brk-whlcyl-rr-e.html">IHPA · SII-BRK-WHLCYL-RR-E +$10</a></td>
+<td>$34.95 ea</td>
+</tr>
+<tr data-part="ihpa-sii-brk-drm-rr-502b8534">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>Rear drums ×2 — <strong>call IHPA</strong>: on a 1966–68 tapered axle the drum is swaged to the hub; confirm this drum slips over your hub pilot</td>
+<td><a href="https://www.ihpartsamerica.com/store/SII-BRK-DRM-RR.html">IHPA · SII-BRK-DRM-RR</a></td>
+<td>$99.95 ea</td>
+</tr>
+<tr data-part="ihpa-sii-brk-pbrk-bar-175-sii-brk-pbrk-arms-sii-brk-guide-pl-281b8873">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Parking brake spreader bar 1¾, curved e-brake arms, guide plates</td>
+<td><a href="https://www.ihpartsamerica.com/store/sii-brk-pbrk-bar-175.html">IHPA · SII-BRK-PBRK-BAR-175 / SII-BRK-PBRK-ARMS / SII-BRK-GUIDE-PLT</a></td>
+<td>$29.95 / $79.95 / $15.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-brk-cable-rear-15d6842b">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>Rear parking brake cable — 303598C91 (103", 1965–71 <strong>4-speed</strong>) is the likely match now that a 4-speed is in; measure the old one</td>
+<td><a href="https://www.ihpartsamerica.com/store/S80-800-BRK-CABLE-REAR.html">IHPA · S80-800-BRK-CABLE-REAR</a></td>
+<td>$194.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-brk-cable-front-9d41f385">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Front parking brake cable</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-brk-cable-front.html">IHPA · S80-800-BRK-CABLE-FRONT</a></td>
+<td>$139.95</td>
+</tr>
+<tr data-part="tool-7394-28cf9aa6">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>OTC 7394 hub puller + 6574-1 five-bolt adapter (borrow/rent or buy — you will use it twice)</td>
+<td><a href="https://4wdmechanix.com/moses-ludels-4wd-mechanix-magazine-hd-video-tool-how-to-using-the-otc-7394-hub-puller/">tool · 7394</a></td>
+<td>~$150</td>
+</tr>
+<tr data-part="d272c4cd">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Rear gear oil: GL-5 80W-90, 3 qt, + modifier in the kit</td>
+<td>local</td>
+<td>~$40</td>
+</tr>
+<tr data-part="ihpa-sii-whl-stud-rr-set-d9b8217a">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td><strong>Wheel studs, all new — rear</strong> Dana 44 (press-in, 1/2"-20 RH; a 1966 800 has right-hand threads on both sides — left-hand studs were 1961–65 Scout 80 only). Order 10; confirm how many a "set" contains</td>
+<td><a href="https://www.ihpartsamerica.com/store/ws.html">IHPA · SII-WHL-STUD-RR-SET</a></td>
+<td>$22.50/set</td>
+</tr>
+<tr data-part="ihpa-call-6f03f3be">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td><strong>Wheel studs — front.</strong> The CPT disc kit supplies new hubs; confirm with IHPA that studs come pressed in (they normally do). If the kit hubs arrive bare, or you keep the original drum hubs, order 10 front studs for the 1961–71 Dana 27 hub from IHPA by phone (no 80/800 front stud is listed on the site)</td>
+<td><a href="https://www.ihpartsamerica.com/store/ws.html">IHPA · call</a></td>
+<td>~$25</td>
+</tr>
+<tr data-part="7099d00a">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td><strong>Lug nuts, all new</strong> — 1/2"-20, 60° conical seat (correct for steel wheels), open or acorn, 20 + 5 for the spare; any parts store or Summit. Torque 90–110 ft-lb, re-torque at 50 miles</td>
+<td>local / Summit</td>
+<td>~$30</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Dana 44 rear (RA-23) — outer ends, Powr-Lok, brakes</strong></p>
+<ol>
+<li>Wheels off, drum/hub assembly: remove cotter pin and castle nut (it's ~150–250 ft-lb tight — ¾" drive). Bolt the OTC 7394 to the studs, tension, and rap the screw with a hammer. Hub and Woodruff key come off. Never hammer the shaft end or pry on the drum. Save keys for comparison, not reuse.</li>
+<li>Backing plate: disconnect the (old) parking cable and hydraulic line; remove the four nuts holding the bearing retainer/backing plate to the housing flange. Slide the shaft out with its outer bearing. <strong>Keep the shim pack with its side</strong> — end-play shims.</li>
+<li>Inspect the taper and keyway on each shaft and hub. A hub that has walked shows a polished, wallowed taper and a rounded keyway. Slight fretting cleans up; a visibly wallowed taper does not — that shaft (SP17135, $526) or hub gets replaced. Check the wheel-stud threads.</li>
+<li>Press the old bearings off (local shop, $20). Fit new outer bearing + race, outer seal, and the inner (housing) seal from D44-TABRG-KIT. Press on new bearings; pack with wheel-bearing grease.</li>
+<li>Pull the cover (ratio already confirmed 4.27). Mark the carrier bearing caps L/R and orientation, unbolt, pry the carrier out with the bearings and shims kept with their sides. Inspect ring and pinion teeth (pitting = master kit + set-up, §3.6 gate) and the carrier bearings (spalling = master kit).</li>
+<li>Powr-Lok: split the case (mark halves), lay out the clutch stack in order on a sheet of cardboard as it comes out, replace with the SP13467 plates in the same sequence — the belleville orientation matters; one wrong plate = chatter. Torque the case screws (verify in CTS-2302; Dana figure 45–60 ft-lb). Reinstall carrier with its original shims, caps torqued (Dana 70–90 ft-lb, verify), and check backlash with the dial indicator: 0.005–0.009". Turn the assembly by hand — it should feel smooth with light drag.</li>
+<li>Pinion seal: mark nut, yoke, and pinion with a punch; count turns off; new seal from WSHR-NUT-SEAL-KIT; nut back to the mark plus a hair — preload is set by the crush sleeve, not the nut torque, so do not go past the mark.</li>
+<li>Shafts back in with shims; set end play 0.004–0.008" total across both shafts (dial indicator on the shaft end, push-pull) — verify the figure in CTS-2302. Retainer nuts torqued.</li>
+<li>Brakes: new backing-plate hardware, wheel cylinders (800-bore), shoes, springs, adjusters, parking-brake spreader bars and arms; guide plates. Bleeder screws pointing up.</li>
+<li>Hubs: solvent-clean both tapers bone dry, new key, hub on, castle nut to spec (<strong>150–175 ft-lb</strong> is the published Jeep figure for this tapered Dana 44; IH is commonly quoted higher — verify in CTS-2302, then go to the next castellation, never back), cotter pin. Drums on (confirmed fit from the drum gate in this section's parts table). Check drum runout with the indicator: &gt;0.005" means the hub is not seated.</li>
+<li>Cover on with a new gasket (or RTV on a clean flange), fill after the axle is on the truck: GL-5 80W-90 plus the friction modifier, ~5.5 pints to the bottom of the fill plug. Paint: everything except the machined faces gets epoxy + chassis black now, before the perches go on (then touch up the welds).</li>
+</ol>
+<p><strong>Parts — Dana 27 front</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="tk-qk4617-81e2fd6f">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Kingpin bearing + shim kit (4 Timken cones, 4 cups, 2 shim sets)</td>
+<td><a href="https://torqueking.com/products/4617-qk4617-dana-axle-small-knuckle-bearing-and-shim-kit">TK · QK4617</a></td>
+<td>$294.50</td>
+</tr>
+<tr data-part="ihpa-sl915664-7519ef6d">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Knuckle seal kit, 8-bolt small knuckle, ×2</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl915664.html">IHPA · SL915664</a></td>
+<td>$19.95 ea</td>
+</tr>
+<tr data-part="tk-qu40628-b008831d">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Inner axle shaft seal, Dana 25/27/30, ×2</td>
+<td><a href="https://torqueking.com/products/40628-qu40628-inner-front-axle-shaft-oil-seal-dana-25-27-30-fc170-axles">TK · QU40628</a></td>
+<td>$14.98 ea</td>
+</tr>
+<tr data-part="ihpa-sl871250r1-a110b094">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Axle-shaft-to-spindle brass bushing, ×2 (new spindles SL871287R91 $89.95 if the OD is grooved)</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl871250r1.html">IHPA · SL871250R1</a></td>
+<td>$14.95 ea</td>
+</tr>
+<tr data-part="sss-nuj365000-3f0207f0">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>M</td>
+<td>Axle u-joints ×2 — measure cap diameter (Spicer 5-153X, 1.062" caps, is the usual Dana 27)</td>
+<td><a href="https://www.superscoutspecialists.com/front-axle-universal-joint-4x4-scout-80-800">SSS · NUJ365000</a></td>
+<td>$45 ea</td>
+</tr>
+<tr data-part="ihpa-wshr-nut-seal-kit-1549c387">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Pinion seal service kit (seal, nut, washer)</td>
+<td><a href="https://www.ihpartsamerica.com/store/wshr-nut-seal-kit.html">IHPA · WSHR-NUT-SEAL-KIT</a></td>
+<td>$24.95</td>
+</tr>
+<tr data-part="tk-777-a97b5f5e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Closed-knuckle lube, 2 tubes</td>
+<td><a href="https://torqueking.com/products/777-closed-knuckle-lubricant-for-closed-knuckle-4x4-front-axles">TK · 777</a></td>
+<td>$18.50 ea</td>
+</tr>
+<tr data-part="tk-qt1011-64b7bf06">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>2-1/16" spindle nut socket</td>
+<td><a href="https://torqueking.com/products/881011-qt1011-2-1-16-hex-front-spindle-nut-socket-jeep-ihc">TK · QT1011</a></td>
+<td>$24.98</td>
+</tr>
+<tr data-part="tk-qt1819-8be19b19">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Knuckle bearing cup installer</td>
+<td><a href="https://torqueking.com/products/1819-qt1819-knuckle-bearing-cup-installer-for-dana-25-27-30-44-front-axles">TK · QT1819</a></td>
+<td>$26.38</td>
+</tr>
+<tr data-part="sp-sp17962-77a68c1d">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Warn hub service kit, M1/M2 originals (or new Warn 29062 set, IHPA $309.95, if bodies are cracked)</td>
+<td><a href="https://scoutparts.com/Warn_Locking_Hub_Service_Kit_Services_2_Hubs_465828C91_Scout_80_Scout_800/p17962">SP · SP17962</a></td>
+<td>$145.23</td>
+</tr>
+<tr data-part="ihpa-cpt-s800-frtdsckit-2b115ef5">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td><strong>CPT front disc brake kit, 1966–71 800, Dana 27/30 — with new bearings option</strong> (11¾" vented rotors, calipers, pads, SS hoses, disc/drum master cylinder, proportioning valve, pushrod)</td>
+<td><a href="https://www.ihpartsamerica.com/store/cpt-s800-frtdsckit.html">IHPA · CPT-S800-FRTDSCKIT</a></td>
+<td>$999.95 + $80</td>
+</tr>
+<tr data-part="sp-sp18994-39eae658">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Front axle gear oil 85W-140, 3 qt</td>
+<td><a href="https://scoutparts.com/Front_Axle_Gear_Oil_For_Scout_80_800_85W_140_Gear_oil_Scout_80_Scout_800/p18994">SP · SP18994</a></td>
+<td>$11.05 ea</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Dana 27 front (FA-14) — closed-knuckle rebuild</strong></p>
+<ol>
+<li>Hubs: six 3/8" bolts, hub body off, snap ring off the stub, inner body off. Lock nut, tab washer, adjusting nut (2-1/16" socket), outer bearing, hub/drum. Backing plate (4 nuts) and spindle off the knuckle — this is where the disc-kit bracket goes.</li>
+<li>Slide the axle shaft/u-joint out. Eight screws off the knuckle seal retainer. Four bolts each on the lower cap and the upper cap (upper = steering arm on the driver side). Knuckle lifts off the ball. Drive the two bearing cups out.</li>
+<li>Inspect: ball surface (the seal rides here — polish light scoring, replace nothing for grooves you can't feel), spindle OD and the brass bushing in the spindle (new bushing SL871250R1; new spindle if the OD is stepped), inner axle seal in the tube, u-joint (replace both — cheap), kingpin cups and cones.</li>
+<li>Differential: pull the cover (4.27, matches the rear). Same inspection as the rear; the D27 master kit is only needed if bearings or gears are damaged.</li>
+<li>New cups in with QT1819. Assemble knuckle on the ball with the <strong>shim pack under the top (steering-arm) cap only</strong>. Torque the cap bolts (verify in CTS-2302; ~70–90 ft-lb). Measure preload <strong>before</strong> the seal, shaft, and tie rod go on: spring scale in the tie-rod hole, <strong>12–16 lb</strong> to start the knuckle sweeping, or 5–10 lb-ft turning torque on a beam wrench on a cap screw. More shims = less preload. Both sides.</li>
+<li>Knuckle seal: felt, rubber, steel retainer, 8 screws (SL915664). Inner axle seal, then the shaft with new joints. Spindle with its new brass bushing onto the knuckle — <strong>with the disc-kit caliper bracket per the CPT sheet</strong>, which also tells you the spindle-nut torque.</li>
+<li><strong>Disc conversion.</strong> Follow the CPT sheet. What every kit needs: grind the knuckle casting where the caliper passes (mark with the caliper mocked up; remove only what's needed, then epoxy the raw iron), fit the new hub/rotor with the new bearings (+$80 option), bearing adjustment: tighten while spinning until slight drag, back off 1/6 turn, tab washer, lock nut, bend the tab. Calipers on, pads in, SS hoses routed with full-lock and full-droop clearance. <strong>Test-fit your wheel now</strong> on both sides at full lock.</li>
+<li>Warn hubs: service kit (SP17962) — clean, new springs/gaskets/O-rings, light grease, reinstall (body bolts 32–40 ft-lb).</li>
+<li>Fill: differential 85W-140 to the plug (~4.5 pints); knuckles with TK 777 semi-fluid, ~6 oz per side. Paint the housing as the rear.</li>
+</ol>
+<h3 id="54-weeks-89-spring-under-conversion-and-rolling-chassis">5.4 Weeks 8–9: spring-under conversion and rolling chassis</h3>
+<p><strong>Parts — suspension, steering, brake hydraulics</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="ihpa-cpt-s80-800-liftkit-plates-8743b454">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td><strong>CPT suspension system 1961–71 80/800 — option "1961–68 w/ Dana 44 rear / Dana 27 front"</strong>: HD springs (factory rate, ~2" lift), 4" HD shackles in 1.875" width, ½" U-bolts, 2° caster shims, Bilstein shocks, poly bushings, extended SS rear hose. Add the HD U-bolt plates</td>
+<td><a href="https://www.ihpartsamerica.com/store/CPT-S80-800-LIFTKIT.html">IHPA · CPT-S80-800-LIFTKIT + plates</a></td>
+<td>$1,449.95 + $249.95</td>
+</tr>
+<tr data-part="as-3286-4a234eb8">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Front spring perches, Dana 27/30, 1¾" spring width, pair (weld-on, under the tube)</td>
+<td><a href="https://anythingscout.com/products/3286-dana-27-30-axle-spring-perch">AS · 3286</a></td>
+<td>$64</td>
+</tr>
+<tr data-part="ruffstuff-r1202-a-e715d4db">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Rear spring perches, 2.75" tube, 2" wide narrow, pair (center the 1¾" spring with the plate)</td>
+<td><a href="https://www.ruffstuffspecialties.com/R1202-A.html">RuffStuff · R1202-A</a></td>
+<td>call</td>
+</tr>
+<tr data-part="a9937950">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>Front U-bolts for the Dana 27 — order by measured tube OD + spring width + perch height (spring shop or IHPA)</td>
+<td><a href="https://www.ihpartsamerica.com/store/cpt-ubolt-kit-stk-f-d30-s800.html">IHPA / local</a></td>
+<td>~$45</td>
+</tr>
+<tr data-part="8b95676c">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Extended bump stops, 2" rubber with 3/8" stud, ×4 (Energy Suspension 9.9101-series or Daystar)</td>
+<td>Summit</td>
+<td>~$60</td>
+</tr>
+<tr data-part="ihpa-steercoupkit-af0ec0fd">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Steering bell-joint (coupler) kit, ¾"-36</td>
+<td><a href="https://www.ihpartsamerica.com/store/STEERCOUPKIT.html">IHPA · STEERCOUPKIT</a></td>
+<td>$49.95</td>
+</tr>
+<tr data-part="sp-sp10384-b9fc4d3e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Tie rod end / drag link complete renewal kit (ball studs, seats, springs, felts)</td>
+<td><a href="https://scoutparts.com/Tie_rod_end_Steering_Linkage_Drag_Link_Complete_Renewal_Kit/p10384">SP · SP10384</a></td>
+<td>$299</td>
+</tr>
+<tr data-part="ihpa-s80-800-str-box-3-4-1e6d55b8">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Rebuilt Ross steering box, ¾"-36 (only if lash adjustment at §5.6 can't fix play)</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-str-box-3-4.html">IHPA · S80-800-STR-BOX-3-4</a></td>
+<td>$649.95 + $600 core</td>
+</tr>
+<tr data-part="7aa482f6">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Rear driveshaft: u-joints ×2 (1310) + slip-yoke seal; shortening if needed</td>
+<td>local driveline shop</td>
+<td>~$60 / ~$150</td>
+</tr>
+<tr data-part="as-ss-8-pc-a1cc47bb">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>Pre-bent hard line kit, 1965–71 800 — <strong>call and confirm the dual-reservoir/distribution-block layout</strong>; expect to make 2–3 short lines yourself</td>
+<td><a href="https://anythingscout.com/products/brake-hard-line-kit-1961-1967-scout-80-800">AS · SS 8-pc</a></td>
+<td>$217</td>
+</tr>
+<tr data-part="ihpa-brkline-rub-340494c92-53a75198">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Rear rubber hose (frame to axle), 800 rear option; the CPT lift kit includes an extended SS one</td>
+<td><a href="https://www.ihpartsamerica.com/store/brkline-rub.html">IHPA · BRKLINE-RUB (340494C92)</a></td>
+<td>$54.95</td>
+</tr>
+<tr data-part="75b9b28a">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>3/16" NiCopp line 25 ft, 3/8-24 inverted-flare nuts, double-flare tool</td>
+<td>local</td>
+<td>~$80</td>
+</tr>
+<tr data-part="bef53604">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>DOT 3 fluid, 2 qt</td>
+<td>local</td>
+<td>—</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Perches.</strong> With both axles painted and the frame coated:</p>
+<ol>
+<li>Cut the SOA perches off the top of the tubes (cutoff wheel, then flap-disc flush; don't gouge the tube). Measure the front hanger center-to-center on the frame (should be 32") and the rear; the new perches go under the tubes at exactly those centers, and the axle centered in the frame (measure tube end to frame rail both sides).</li>
+<li>Set pinion/caster angle before welding. <strong>Front (Dana 27):</strong> with the truck at ride height (mock it: frame on stands at the height the CPT springs will give, axle under it on jack stands with the springs U-bolted through the loose perches), aim <strong>+3° to +4° caster</strong> — read it with a digital angle finder on the machined kingpin cap face vs the frame rail (which should be level fore-aft; shim the stands). The 2° CPT shims are the fine adjustment afterward, thick end forward. <strong>Rear (Dana 44):</strong> pinion pointed at the T-case output, 1–2° below the driveshaft centerline at rest (it rises under torque). Tack in that orientation, check both sides match, confirm the axle is square (diagonals from perch center to opposite frame hanger), then weld.</li>
+<li>Welding: 240 V MIG, 0.035" wire, ~150 A on the 2.75" rear tube; skip-weld 1" runs alternating sides so the tube doesn't pull, let it cool between passes; full perimeter, keep welds off the tube-to-center-section seam. Fill the axle only after welding. Touch up paint.</li>
+<li>Springs and shackles: CPT springs (front short pack forward — check the center pin offset if any, matching the old spring), poly bushings with the supplied lube, 4" shackles (1.875" width) rear-hung as stock, ½" U-bolts through the CPT plates (enlarge the factory plates or use the CPT HD plates). Torque U-bolts per the CPT sheet (typically 85–95 ft-lb, cross pattern, re-torque after 100 miles). Leave shackle and eye bolts snug until the truck is on its wheels at ride height, then torque — poly bushings torqued at droop bind.</li>
+<li>Bump stops: extended stops set so that at full compression (jack the axle up against the frame with the shock removed) the 33 has ½–¾" to the fender lip and inner wheelhouse at straight-ahead <strong>and</strong> at full lock. If it can't be done with stops alone, that is the 1" body lift decision (§6.10). Shocks: the CPT Bilsteins are pre-selected for this lift; confirm extended length ≥ full droop + ½" and collapsed ≤ bump − ½".</li>
+<li>Steering: reinstall the box (rebuilt or serviced — §5.6), pitman arm, new ball studs/seats/springs in the drag link and tie rod (SP10384), sleeves and clamps free; bell-joint coupler kit at the column. Do not set toe yet.</li>
+<li>Driveshafts: new 1310 u-joints; check the rear slip yoke: ≥1" of spline engaged at full droop, ≥¾" before bottoming at full bump. If the previous owner lengthened it for SOA, it's now too long — driveline shop, ~$150. Front shaft: check clearance at the crossmember at full droop and full lock (the CPT page warns about this on 80/800s).</li>
+<li>Brake hard lines: run the pre-bent kit (confirmed dual-circuit layout), keep the IH distribution block/failure switch as the junction unless CPT says delete, add the CPT proportioning valve in the rear circuit; make the 2–3 short lines the kit doesn't cover with NiCopp and double flares. Clip every line every 12". Rear rubber hose to the axle (extended). Master cylinder from the CPT kit on the firewall side — leaves with the tub, so just stage it.</li>
+<li>Parking brake: cross-shaft, front cable, rear cable (4-speed length), equalizer. Leave slack.</li>
+</ol>
+<h3 id="55-weeks-812-engine">5.5 Weeks 8–12: engine</h3>
+<p><strong>Parts — engine</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="ihpa-iheng-oh-kit-4cyl-1cd3f8f4">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>Complete engine overhaul kit, <strong>196 option (+$125)</strong>: pistons, rings, mains, rods, cam bearings, timing gear set, oil pump kit, gasket kit, cam, lifters, freeze plugs — <strong>order after machine shop reports bore/crank sizes</strong>; 196 pistons come .030/.040/.060 only</td>
+<td><a href="https://www.ihpartsamerica.com/store/IHENG-OH-KIT-4CYL.html">IHPA · IHENG-OH-KIT-4CYL</a></td>
+<td>$2,444.95</td>
+</tr>
+<tr data-part="ihpa-iheng-pistringset-etc-a81b51d8">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Re-ring path instead of the kit: ring set + mains + rods + cam bearings + full gasket kit + timing gears + lifters</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-pistringset.html">IHPA · IHENG-PISTRINGSET etc.</a></td>
+<td>~$1,050</td>
+</tr>
+<tr data-part="ihpa-iheng-gask-oh-6a0387f5">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Full overhaul gasket kit (in the kit above; listed for the re-ring path) — <strong>196 option (+$90)</strong>, not the I/C version (that is 1978+)</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-gask-oh.html">IHPA · IHENG-GASK-OH</a></td>
+<td>$339.95</td>
+</tr>
+<tr data-part="ihpa-iheng-seal-rr-b25fb78c">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Rear main seal, one-piece</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-seal-rr.html">IHPA · IHENG-SEAL-RR</a></td>
+<td>$69.95</td>
+</tr>
+<tr data-part="sp-sp10170-8cca1ee4">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Timing cover gasket/seal set (cover gasket, water-tube O-rings, front crank seal)</td>
+<td><a href="https://scoutparts.com/Timing_Cover_Set_133494_R2_and_151962_R91_Scout_II_Scout_80_Scout_800_Pickup/p10170">SP · SP10170</a></td>
+<td>$44.95</td>
+</tr>
+<tr data-part="ihpa-sl151885r92-8919a6ca">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Timing gear set (crank + cam) — replace on any rebuild</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl151885r92.html">IHPA · SL151885R92</a></td>
+<td>$249.95</td>
+</tr>
+<tr data-part="ihpa-sl217158r92-a67c4fc5">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Hydraulic lifters, set of 8</td>
+<td><a href="https://www.ihpartsamerica.com/store/SL217158R92.html">IHPA · SL217158R92</a></td>
+<td>$19.95 ea</td>
+</tr>
+<tr data-part="ihpa-call-0745b976">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Valve guides ×8 — the SL151798R1 guide is listed for 152/266/304/345; the 196 head has larger valves, so confirm the 196 guide with IHPA when the head is measured</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl151798r1.html">IHPA · call</a></td>
+<td>~$10 ea</td>
+</tr>
+<tr data-part="ihpa-iheng-gask-vsss-f77f30e8">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Valve stem seal set</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-gask-vsss.html">IHPA · IHENG-GASK-VSSS</a></td>
+<td>$19.95</td>
+</tr>
+<tr data-part="ihpa-iheng-oilpmp-rbdkit-72e26fbd">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Oil pump rebuild kit (or new pump SL151075R93 $299.95)</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-oilpmp-rbdkit.html">IHPA · IHENG-OILPMP-RBDKIT</a></td>
+<td>$109.95</td>
+</tr>
+<tr data-part="ihpa-sl863730r92-2f271bbb">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Oil pump pickup screen</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl863730r92.html">IHPA · SL863730R92</a></td>
+<td>$28.95</td>
+</tr>
+<tr data-part="ihpa-iheng-frzplg-kit-b-c1db9ca1">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Brass freeze plug kit</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-frzplg-kit-b.html">IHPA · IHENG-FRZPLG-KIT-B</a></td>
+<td>$44.95</td>
+</tr>
+<tr data-part="ihpa-iheng-wtrpmp-n-1fdb230e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Water pump, new</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-wtrpmp-n.html">IHPA · IHENG-WTRPMP-N</a></td>
+<td>$109.95</td>
+</tr>
+<tr data-part="ihpa-iheng-tstat-e25f068e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Thermostat 180°F (Robertshaw)</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-tstat.html">IHPA · IHENG-TSTAT</a></td>
+<td>$29.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-radhos-set-4cyl-dd371f18">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Radiator hose set, 80/800 4-cyl</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-radhos-set-4cyl.html">IHPA · S80-800-RADHOS-SET-4CYL</a></td>
+<td>$134.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-enginemountkit-a15f0b2d">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Engine mount pair</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-enginemountkit.html">IHPA · S80-800-ENGINEMOUNTKIT</a></td>
+<td>$114.95</td>
+</tr>
+<tr data-part="ihpa-sl879627r93-28d570a9">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Rear (transmission) mount</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl879627r93.html">IHPA · SL879627R93</a></td>
+<td>$43.95</td>
+</tr>
+<tr data-part="ihpa-iheng-exh-man-bolt-kit-sl212013r1-iheng-gask-exh-dnt-1-ed2c4fef">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Exhaust manifold bolt kit + heat-riser gasket + donut gasket</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-exh-man-bolt-kit.html">IHPA · IHENG-EXH-MAN-BOLT-KIT / SL212013R1 / IHENG-GASK-EXH-DNT-1</a></td>
+<td>$14.95 / $14.95 / $18.95</td>
+</tr>
+<tr data-part="ihpa-dpc-carbkit-5433-22cafcc0">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-own">owned</span></td>
+<td>L</td>
+<td>Carburetor rebuild kit — you have a 1904 kit and the carb is a 1904 (big-bore 196 version). Confirm the airhorn list number matches the kit; if a spare is wanted: IHPA kit with option "5433 – Holley 1904 &amp; 4cyl"</td>
+<td><a href="https://www.ihpartsamerica.com/store/dpc-carbkit.html">IHPA · DPC-CARBKIT + 5433</a></td>
+<td>$62.95</td>
+</tr>
+<tr data-part="ihpa-cc-6167-3d261be3">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Aluminum radiator, 80/800 4-cyl, with cap</td>
+<td><a href="https://www.ihpartsamerica.com/store/CC-6167.html">IHPA · CC-6167</a></td>
+<td>$339.95</td>
+</tr>
+<tr data-part="sp-sp10172-568bf273">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Fuel pump, 4-cyl mechanical (no vacuum booster — you're converting to electric wipers)</td>
+<td><a href="https://scoutparts.com/Fuel_Pump_4_Cylinder_Rebuilt_No_Glass_Bowl_863733R91_384853C91_326086C93_Scout_80_Scout_800/p10172">SP · SP10172</a></td>
+<td>call</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Diagnosis on the stand (weeks 2–3, before the machine shop):</strong></p>
+<ol>
+<li>Warm test is off the table once the engine is out; instead pull the head and look. (Engine identity is settled: 4-196, serial 3722. If you want a second confirmation, stroke through the plug hole is 3.66".)</li>
+<li>Head off (bolts are 1/2-13, loosen in reverse spiral). Photograph the chambers and bores. Look for the crack between the seat and the plug hole on #2. Ridge at the top of the bores = worn bores. Score marks, broken ring lands, wiped cam lobes (pull the lifters, look at the faces — any dishing means cam + lifters).</li>
+<li>Bottom end: pan off, check the rod and main bearings for copper showing, crank journals for scoring. Pull the timing cover; timing gears with rounded teeth or visible wear = replace (already on the list).</li>
+<li>Deliver to the machine shop <strong>completely disassembled, cleaned enough to inspect, with the IHPA parts sheet</strong> and this ask list: hot-tank and Magnaflux block and head, pressure-test the head, measure bores/taper/out-of-round, crank mains and rods, cam lobes and cam bearings, rod small ends and straightness, deck flatness; report back before machining. Then: bore and plateau-hone to the next available oversize with a torque plate if they have one; deck only for flatness; cam bearings; crank polish or grind to .010; recondition rods and press new pistons; 3-angle valve job with new guides and stem seals, spring height check; <strong>hardened exhaust seat inserts</strong> (cheap insurance on a truck that will be driven — IH did not induction-harden these); replace the 1-3/8" head core plugs; balance the rotating assembly <strong>with the flywheel and pressure plate</strong> (the 196 is balanced with its own flywheel — do not skip if the crank is ground or pistons change). Rebuild the distributor at the same time (endplay &gt;0.100" swings timing 10°).</li>
+</ol>
+<aside class="callout gate"><span class="callout-label">GATE 3 — order the engine kit only after the machine shop reports sizes</span><p> The kit is configured to bore and journal size; 196 pistons come in .030/.040/.060 only. Call IHPA with the shop's numbers rather than ordering from the web page.</p>
+</aside>
+<p><strong>Assembly (weeks 10–12), everything with assembly lube, all torques on lubricated threads:</strong></p>
+<ol style="counter-reset: step 4">
+<li>Block on the stand, freeze plugs in (brass, sealant on the bore), cam bearings already in from the shop. Cam in with the lobes lubed with moly assembly lube, thrust plate 14–16 ft-lb.</li>
+<li>Main bearings in, crank in, caps in the right order and direction, <strong>75–85 ft-lb</strong>, crank spins freely; check end play with the indicator (spec in CTS-2300 series; typical 0.003–0.009").</li>
+<li>Rear main: one-piece lip seal installed <strong>dry</strong> with the spreader so the lip doesn't fold; sealant on the cap side seals — this is the #1 leak point on these engines.</li>
+<li>Rings gapped in the bore (ring maker's spec, typically 0.004"/inch of bore for the top ring), staggered; pistons in with a ring compressor, rod caps matched, rod nuts <strong>40–45 ft-lb</strong>.</li>
+<li>Timing gears aligned dot-to-dot, cam gear bolt <strong>55–65 ft-lb</strong>. Timing cover with the SP10170 set (new front seal, water-tube O-rings). Oil pump rebuilt or new, new pickup screen, pan with the new gasket.</li>
+<li>Head: new gasket (dry unless the maker says otherwise), head bolts <strong>90–110 ft-lb</strong> in three passes from the center out (sequence diagram in CTS-2300/2302 — use it). Lifters in, pushrods, rocker shaft assembly — <strong>clean the shaft's eight spit holes and the head's rear drainback first</strong>, cup plugs new, shaft notch up, oiler stand third from the rear; stand bolts 25–30 ft-lb.</li>
+<li>Intake/exhaust manifold with new gaskets; intake bolts <strong>25–30 ft-lb</strong> with sealant on the threads. Heat riser free or wired open. Water pump, thermostat, housing. Flywheel with sealant on the bolt threads, <strong>45–55 ft-lb</strong> — they pass into the crank flange and weep otherwise. Ring gear checked.</li>
+<li>Prime the oil system with a drill on the pump drive (or pre-fill the filter and crank with plugs out until pressure shows) before first start.</li>
+</ol>
+<h3 id="56-weeks-512-bench-parallel-clutch-t-18-dana-20-steering-box">5.6 Weeks 5–12 (bench, parallel): clutch, T-18, Dana 20, steering box</h3>
+<p><strong>Parts — clutch, transmission, transfer case</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="ihpa-clutch-kit-bb-10-reman-150-core-or-clutch-kit-10-n-new-84b7466e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>10" clutch kit, 80/800 4-cyl (plate, disc 15/16" 10-spline, pilot bearing, T/O bearing) — confirm input spline first</td>
+<td><a href="https://www.ihpartsamerica.com/store/clutch-kit-bb-10.html">IHPA · CLUTCH-KIT-BB-10 (reman, $150 core) or CLUTCH-KIT-10-N (new)</a></td>
+<td>$539.95 / $649.95</td>
+</tr>
+<tr data-part="ihpa-clutch-at-afe0b432">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Clutch alignment tool, 15/16" 10-spline</td>
+<td><a href="https://www.ihpartsamerica.com/store/clutch-at.html">IHPA · CLUTCH-AT</a></td>
+<td>$9.95</td>
+</tr>
+<tr data-part="ihpa-s80-clutch-mstr-a0188626">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Clutch master cylinder 1961–68</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-clutch-mstr.html">IHPA · S80-CLUTCH-MSTR</a></td>
+<td>$84.95</td>
+</tr>
+<tr data-part="ihpa-s80-clutch-slv-4df52c07">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Clutch slave cylinder 1961–68</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-clutch-slv.html">IHPA · S80-CLUTCH-SLV</a></td>
+<td>$93.95</td>
+</tr>
+<tr data-part="ihpa-s80-clutch-slv-hose-a5235681">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Clutch slave hose</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-clutch-slv-hose.html">IHPA · S80-CLUTCH-SLV-HOSE</a></td>
+<td>$34.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-clutch-fork-a26dbca7">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>L</td>
+<td>Reman clutch fork (inspect yours; the pivot wears)</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-clutch-fork.html">IHPA · S80-800-CLUTCH-FORK</a></td>
+<td>$184.95 + $100 core</td>
+</tr>
+<tr data-part="sp-sp21089-a5366842">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>T-18 overhaul kit, Scout 800 — <strong>call to confirm it is the 4-cyl 15/16"-input version</strong></td>
+<td><a href="https://scoutparts.com/Scout_800_T18_Transmission_Rebuild_Kit__Scout_800/p21089">SP · SP21089</a></td>
+<td>$308.95</td>
+</tr>
+<tr data-part="ihpa-trans-rebuild-kit-3130fe08">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Alternative: manual trans rebuild kit, T-18/T-19 option</td>
+<td><a href="https://www.ihpartsamerica.com/store/trans-rebuild-kit.html">IHPA · TRANS-REBUILD-KIT</a></td>
+<td>$159.95 + $130</td>
+</tr>
+<tr data-part="ihpa-sl463367c1-949662bc">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Trans-to-T-case gasket (functions as a shim — never RTV only)</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl463367c1.html">IHPA · SL463367C1</a></td>
+<td>$10.95</td>
+</tr>
+<tr data-part="ihpa-tcase-d20-oh-kit-37e9a5c5">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>Dana 20 master overhaul kit — choose "through G435971" if the T-case tag confirms</td>
+<td><a href="https://www.ihpartsamerica.com/store/tcase-d20-oh-kit.html">IHPA · TCASE-D20-OH-KIT</a></td>
+<td>$259.95</td>
+</tr>
+<tr data-part="ihpa-tcase-d18-d20-his-c80631c1">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Hardened intermediate shaft, D20</td>
+<td><a href="https://www.ihpartsamerica.com/store/tcase-d18-d20-his.html">IHPA · TCASE-D18-D20-HIS</a></td>
+<td>$89.95</td>
+</tr>
+<tr data-part="ihpa-sl862281r1-sl2752604r2-418b00e2">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Twin-stick shifter boot 1961–68 + decal</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl862281r1.html">IHPA · SL862281R1 / SL2752604R2</a></td>
+<td>$57.95 / $10</td>
+</tr>
+<tr data-part="b7131c54">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Gear oil: 80W-90 GL-5/MT-1 mineral or para-synthetic (Novak) — ~4 qt trans + 2 qt T-case; <strong>no full synthetic, no GL-5 with aggressive EP for the brass synchros — MT-1 rated is the safe choice</strong></td>
+<td>local</td>
+<td>~$60</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Clutch and bell.</strong> Pilot bearing (from the kit — it's the 4-cyl small-tip version), disc with the 15/16" alignment tool, pressure plate torqued in a star pattern to the kit spec. Bell to engine <strong>105 ft-lb</strong>. New T/O bearing on the collar with the roll pin, light grease on the retainer tube and fork pivot; reman fork if yours is worn at the pivot.</p>
+<p><strong>T-18.</strong> Novak's and IHPA's guidance in one paragraph: top cover off first — count the first-gear teeth and look at the synchros (brass blocker rings worn to the stop = the "not smooth" you feel in 2-3-4; notchy 1st is normal — no synchro). The kit replaces bearings, seals, gaskets, synchro rings, snap rings. Front bearing retainer on the 4-cyl box is the small-tube type and a known breakage point — inspect the tube; the input seal in the IHPA generic T-18 kit does <strong>not</strong> fit it, so match the seal to your retainer. Pressing the input and output bearings needs a press. Shift-rail plugs and detent balls new. Drain and fill plugs with thread sealant (not tape), ~35 ft-lb. Fill with MT-1 80W-90 to the bottom of the fill plug, ~4 qt.</p>
+<aside class="callout gate"><span class="callout-label">GATE 4 — T-18 scope</span><p> If the teardown shows chipped gear teeth or a worn cluster, a rebuild kit will not fix it; that is a used 4-cyl T-98/T-18 (ihscout.com lists the combo at $700 when in stock) or a gear set from Novak. Decide with the case open.</p>
+</aside>
+<p><strong>Dana 20</strong> (Novak rebuild guide is the reference): drain; five rear-output bolts (note the long one) and bottom cover; drive the intermediate shaft out <strong>toward the rear</strong> (its rear end is 0.0015" larger — driving it forward damages the case) catching the gear, 48 rollers, 3 spacers, 2 thrust washers; front output yoke/seal, shift linkage, rear cover (don't pry), tap the output rearward, safety wire, rails and forks, front output. Replace everything in the master kit plus the hardened intermediate shaft; never mix old and new rollers. Set end play with the shim packs: <strong>front output 0.002–0.005", rear 0.003–0.006"</strong>. Torques: front output housing and rear cover 30 ft-lb; fork bolts 12–15; bottom cover <strong>15 ft-lb max</strong> (warps and leaks if more); yoke nuts 175 ft-lb. Thin RTV both faces of each gasket, hand-tight, wait several hours, then final torque. The trans-to-case gasket is a shim — always use it. Detent springs: if the case jumped out of low before, the springs are short — compare to the kit's, shim with stainless washers to original length. Fill MT-1 80W-90, ~2 qt.</p>
+<p><strong>Steering box.</strong> Center it (count lock-to-lock, halve), then set sector lash <strong>only at center</strong> with the top adjuster; end play is the worm bearing shims, not the adjuster. If lash can't be brought in without binding off-center, exchange for the IHPA rebuilt Ross. Fill with 90 wt gear oil or the IH-specified lube.</p>
+<h3 id="57-weeks-1013-powertrain-into-the-chassis">5.7 Weeks 10–13: powertrain into the chassis</h3>
+<ol>
+<li>Engine + bell + T-18 + Dana 20 stacked on the pallet as a unit (the way it came out), new mounts, in with the leveler nose-up. Engine mounts and the rear mount torqued. Driveshafts on (paint marks aligned), strap bolts torqued.</li>
+<li>Clutch hydraulics: new master on the firewall (stays with the tub — stage it), slave on its bracket, hose. Bleed after the body is on.</li>
+<li>Exhaust: from the manifold donut back is a local exhaust shop job (no complete 4-cyl system is sold) — 2" aluminized, one muffler, exit ahead of the rear tire, hangers to the frame. Do it after the body is on so the shop sees the floor.</li>
+<li>Fuel line from the frame-mounted selector location to the pump; fuel pump on (mechanical, no vacuum section).</li>
+<li>Alternator, brackets (bush any wallowed pivot holes), correct V-belt pulley, belt. Starter, cables staged.</li>
+</ol>
+<h2 id="6-phase-1-tub">6. Phase 1 — tub</h2>
+<p>Runs in parallel with §5.3–5.7 whenever the frame side is waiting on a shop.</p>
+<h3 id="61-strip-and-map">6.1 Strip and map</h3>
+<ol>
+<li>Tub on the sawhorses, rockers on the 4×4s. Remove everything left: dash pad, pedals, column, master cylinders, wiring remnants, heater ducts, cowl vent, tank compartments' loose parts.</li>
+<li>Strip the floors, rockers, tank bays, and rear corners to bare metal (80-grit DA; a mobile blaster can do the underside and floors while the tub is on the horses — cheaper than blasting the exterior, which waits for Phase 2). Probe with an awl. Mark every through-hole and every area pitted more than half the thickness with a paint pen. Photograph the map.</li>
+</ol>
+<aside class="callout gate"><span class="callout-label">GATE 5 — sheet metal order</span><p> From the map: front floor pans L+R are already ordered. Add toe boards, inner rockers, kick panel patches, quarter patches, tail-light corner panels, tank support plates <strong>only</strong> for what the map shows. Order all in one shipment (freight is the cost driver).</p>
+</aside>
+<h3 id="62-floor-pans-and-rust-repair">6.2 Floor pans and rust repair</h3>
+<p><strong>Parts — floor pans and rust repair</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="auto-parts-paint-40793-2f12b080">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>SEM Copperweld weld-through primer</td>
+<td><a href="https://autopartspaint.com/products/sem-copperweld%E2%84%A2-primer">Auto Parts Paint · 40793</a></td>
+<td>$48.49</td>
+</tr>
+<tr data-part="perpetual-paint-08308-5a378d0d">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>3M 08308 heavy-bodied seam sealer, 2-part (plan 2)</td>
+<td><a href="https://perpetualpaint.com/products/3m-08308">Perpetual Paint · 08308</a></td>
+<td>$59.50</td>
+</tr>
+<tr data-part="sp-sp11896-d8580f1b">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Front floor pans <strong>with supports welded on</strong>, L + R</td>
+<td><a href="https://scoutparts.com/Front_Floor_Pans_With_Supports_Scout_80_800__Scout_80_Scout_800/p11896">SP · SP11896</a></td>
+<td>$302.91 ea</td>
+</tr>
+<tr data-part="ihpa-s80-800-bod-ftb-inner-rckr-kickpnl-qp-ptch-ltlp-5cfcf59c">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Front toe board, inner rocker, kick panel patch, lower quarter patch, tail-light corner panels — only what the bare tub shows you need</td>
+<td><a href="https://www.ihpartsamerica.com/store/sbps80800.html">IHPA · S80-800-BOD-FTB / -INNER-RCKR / -KICKPNL / -QP-PTCH / -LTLP</a></td>
+<td>$79.95 / $86.95 / $59.95 / $59.95 / $49.95</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Cut the front floor sections out 1–2" back from the last pin-hole, keeping the original as a template. The scoutparts pans come with the supports welded on; trim the pan to a <strong>butt joint</strong> on the visible seams (gap ≈ wire diameter, 0.023–0.030") and lap only where the factory lapped (floor-to-rocker flange, floor-to-support).</li>
+<li>Weld-through primer on every hidden mating flange. 0.023" ER70S-6, 75/25, machine set for 20 ga. Tack every 1–1.5", cool, stitch ½" runs skipping around; air-cool between passes; never a continuous bead. Dress with a 36 flap then 80; leave the weld a hair proud.</li>
+<li>Same method for every other patch. Rear corners and rockers: keep the door striker and hinge geometry — hang the door to check the gap before final welding on anything near an opening.</li>
+<li>Traveltop drip rails and the tailgate skin are not reproduced — repair with patch metal you form on the bench.</li>
+</ol>
+<h3 id="63-seal-prime-coat">6.3 Seal, prime, coat</h3>
+<p><strong>Parts — coatings</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="genesis-auto-body-up0820-90347e11">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>U-POL Raptor black 4 L kit (tub underside, wheel wells, floors) — plan 2 kits</td>
+<td><a href="https://www.genesisautobodysupply.com/product/2202/u-pol-raptor-black-bed-liner-4-liter-kit-up0820">Genesis Auto Body · UP0820</a></td>
+<td>$139.99</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Bare metal gets <strong>SPI epoxy within hours</strong> of being exposed (two coats). Seam sealer (3M 08308) over the epoxy on every seam, top and bottom of every lap flange, tooled to look like the factory brushed seams.</li>
+<li><strong>Underside of the tub, wheel wells, rockers, tank bays:</strong> epoxy → Raptor, two coats, light texture, through the schutz gun. Mask the body-mount pads to bare epoxy so the mounts seat on a smooth surface.</li>
+<li><strong>Top side of the floors:</strong> epoxy → Raptor (it lives under rubber mats and takes wet boots; it is also what keeps Phase 2 from touching the floors).</li>
+<li><strong>Engine bay, firewall, inner fenders, cowl underside:</strong> strip, epoxy, then SPI single-stage satin/semi-gloss black. Mask the firewall holes for the harness grommets, master cylinders, heater. Factory was body color; black is your stated choice and hides the mixed patina until Phase 2.</li>
+<li><strong>Everything else on the exterior stays as it is</strong> — but every bare-metal repair on an exterior panel (rear corners, rockers) gets epoxy and a coat of satin black so it's protected until Phase 2. Do not filler or prime the exterior beyond that; Phase 2 wants to see the metal.</li>
+</ol>
+<h3 id="64-doors-and-glass">6.4 Doors and glass</h3>
+<p><strong>Parts — doors and glass</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="ihpa-sl266310c1-e2a4c5fd">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Windshield seal</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl266310c1.html">IHPA · SL266310C1</a></td>
+<td>$114.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-dr-sealkit-f3f5d01d">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Door seal set, upper + lower, both doors</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-dr-sealkit.html">IHPA · S80-800-DR-SEALKIT</a></td>
+<td>$129.95</td>
+</tr>
+<tr data-part="ihpa-mm-it265-607e39a0">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Door window felt kit ("fuzzies"), both doors</td>
+<td><a href="https://www.ihpartsamerica.com/store/mm-it265.html">IHPA · MM-IT265</a></td>
+<td>$164.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-dr-wind-chnnl-sl684477r1-18d44fff">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Door window guide channel + roll-up guide track, per door</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-dr-wind-chnnl.html">IHPA · S80-800-DR-WIND-CHNNL / SL684477R1</a></td>
+<td>$69.95 / $74.95</td>
+</tr>
+<tr data-part="sp-sp13996-76e23b70">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Window regulators, used (only if yours can't be freed and re-greased)</td>
+<td><a href="https://scoutparts.com/Scout_80_800_Window_Regulator_Used_In_Stock_Now_341745C2_Passenger_341744C2_Driver_353051C2_left_pin_handle_353052C2_right_pin_handle_36426_Scout_80_Scout_800/p13996">SP · SP13996</a></td>
+<td>call</td>
+</tr>
+<tr data-part="ihpa-sl162210r1-de9d5654">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Window regulator clips ×4</td>
+<td><a href="https://www.ihpartsamerica.com/store/SL162210R1.html">IHPA · SL162210R1</a></td>
+<td>$5</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Regulators: free them on the bench (penetrant, cycle by hand, clean and grease the sector and the arms' rollers). If a sector is stripped, used replacements from SP13996. New clips.</li>
+<li>New window guide channel and roll-up track per door; new fuzzies; door glass back in and cycled full travel; then the new upper and lower door seals.</li>
+<li>Hinges: if the doors sagged, press the pins out (NOS pins) and ream/bush in-house, or new hinges. Hang the doors and set the gaps with the hinge screws and striker before the Traveltop goes on.</li>
+<li>Windshield: out when the cowl is being worked (rope-in seal is new — SL266310C1), cowl repair if needed (S800-BOD-WCRP), back in with the new seal.</li>
+</ol>
+<h3 id="65-traveltop">6.5 Traveltop</h3>
+<p><strong>Parts — Traveltop and tailgate seals</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="ihpa-sl274845c1-2cb3508f">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Traveltop-to-quarter-panel seal set L+R</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl274845c1.html">IHPA · SL274845C1</a></td>
+<td>$99.95</td>
+</tr>
+<tr data-part="ihpa-sl382942c1-4ece4268">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Traveltop window seal (rope-in), one per opening — measure circumference, 3 openings</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl382942c1.html">IHPA · SL382942C1</a></td>
+<td>$79.95 ea</td>
+</tr>
+<tr data-part="sp-sp10561-2ab1ac87">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Traveltop bolt kit</td>
+<td><a href="https://scoutparts.com/Scout_80_800_Travel_Top_Bolt_Kit_Complete__/p10561">SP · SP10561</a></td>
+<td>$35.21</td>
+</tr>
+<tr data-part="ihpa-sl892222r1-sl892218r1-sl272957c1-284d720b">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Tailgate/liftgate seals: lower liftgate, side set, bottom</td>
+<td><a href="https://www.ihpartsamerica.com/store/LGP.html">IHPA · SL892222R1 / SL892218R1 / SL272957C1</a></td>
+<td>$31.95 / $19.95 / $19.95</td>
+</tr>
+<tr data-part="d04069c8">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Butyl tape ¾" × 1/8" (2 rolls) + 1" closed-cell foam "camper tape" for the windshield header</td>
+<td>hardware</td>
+<td>~$30</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Strip the old body-flange seal completely; clean the flange to bare metal where it was rusty, epoxy, seal-seal.</li>
+<li>Traveltop glass: out, channel cleaned and epoxied where rusted, back in roped with the trimmed SL382942C1 seal (pull cord and soapy water).</li>
+<li>Fit: butyl tape on the body flange under the new SL274845C1 seal; 1" closed-cell foam camper tape across the windshield header covering the four screw holes; new bolt kit; snug the 5–7 bolts per side evenly, then the header screws; wipe squeeze-out with mineral spirits. No silicone anywhere.</li>
+<li>Hose test with the doors closed. Fix now, not after paint.</li>
+</ol>
+<h3 id="66-body-on">6.6 Body on</h3>
+<p><strong>Parts — body mounts</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="sp-sp10065-0ec359c7">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Complete body mount kit, rubber, all 9 points with cupped retainers and bolts</td>
+<td><a href="https://scoutparts.com/Scout_80_800_Complete_Body_Mount_Kit_89482R1_862162R1_72799H_98680H_144421H_862356R1_175606R1_Scout_80_Scout_800/p10065">SP · SP10065</a></td>
+<td>$149.95</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>New mounts: cup, rubber, washer, bolt at each of the 9 positions, the Nylock under the radiator support. Original shims back in their labeled positions.</li>
+<li>Lift the tub with the 4×4s exactly as it came off, roll the chassis under, lower. Start every mount bolt before torquing any. Check door gaps against the pre-teardown photos and adjust with shims before final torque.</li>
+<li>Column through the floor plate to the coupler; pedal box; both master cylinders (brake M/C is the CPT disc/drum unit — note the IHPA page warns of a fender-well modification for clearance; adjustable pushrod set for 1/16" free play); clutch master.</li>
+<li>Bleed the clutch (master highest, slave bleeder lowest; treat it like a brake). Bleed the brakes: bench-bled master first; RR, LR, RF, LF; prop valve fully open to start; then adjust rear shoes (drag, back off 8–10 clicks), take up the parking cable slack to 3–5 clicks.</li>
+</ol>
+<h3 id="67-fuel-system">6.7 Fuel system</h3>
+<p><strong>Parts — fuel system</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="f6fdf28c">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-own">owned</span></td>
+<td>L</td>
+<td>Plastic tanks L+R with senders — <strong>you have these</strong>. Confirm they are the MTS 12-gal with 73 Ω empty / 10 Ω full senders</td>
+<td><a href="https://www.gastankdepot.com/scsu1-gas-tank-sending-unit-international-scout-80-800-12-gallon.html">—</a></td>
+<td>—</td>
+</tr>
+<tr data-part="sp-sp10179-5cdb7ec3">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Electric fuel selector kit — valve under the cab + dash toggle that <strong>also switches the gauge sender</strong></td>
+<td><a href="https://scoutparts.com/products/?product_id=10179&amp;view=product">SP · SP10179</a></td>
+<td>$94.09</td>
+</tr>
+<tr data-part="ihpa-s80-800fuelfil-1cf16378">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Filler necks L + R</td>
+<td><a href="https://www.ihpartsamerica.com/store/S80-800FUELFIL.html">IHPA · S80-800FUELFIL</a></td>
+<td>$109.95 ea</td>
+</tr>
+<tr data-part="52807034">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Filler hose (Gates 1¾"/2" fuel-filler, measure necks), clamps, vent hose</td>
+<td>NAPA</td>
+<td>~$60</td>
+</tr>
+<tr data-part="b9528a2c">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>5/16" NiCopp fuel line 25 ft, SAE 30R7 hose, inline filter, clamps</td>
+<td>local</td>
+<td>~$70</td>
+</tr>
+<tr data-part="ihpa-s80-800-bod-ftscp-etc-bde4b584">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>L</td>
+<td>Fuel tank support / compartment sheet metal — only if the tub shows rot around the tank bays</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-bod-ftscp.html">IHPA · S80-800-BOD-FTSCP etc.</a></td>
+<td>$64.95–99.95</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Both plastic tanks in their bays with new straps/hardware, senders installed in the correct clock position (float toward the tank center, not the wall). <strong>Ground wire from each sender body to the tub</strong> — plastic tanks don't ground.</li>
+<li>Filler necks L+R, new filler hose, vent hose routed high.</li>
+<li>Electric selector kit (SP10179): valve under the cab, 5/16" NiCopp from each tank to the valve, valve to a filter, filter to the pump; SAE 30R7 hose only at the ends, double clamps. The kit's dash toggle switches the gauge sender with the tank.</li>
+<li>Pressure-check with 3 psi of air and soapy water before fuel goes in.</li>
+</ol>
+<h3 id="68-electrical">6.8 Electrical</h3>
+<p><strong>Parts — electrical, ignition, charging, wipers</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="sss-wiring-harness-with-ato-update-31e3d1f2">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td><strong>SSS OEM-pattern harness with ATO blade-fuse update</strong> — main dash, tail, engine, headlight sections; give them chassis #, build date, 4-cyl, 4-speed, alternator type, electric wipers</td>
+<td><a href="https://www.superscoutspecialists.com/modern-ato-type-fuse-wiring-harness-scout-scout-ii">SSS · "Wiring harness with ATO update"</a></td>
+<td>from $399 main; ~$1,350–1,450 all four</td>
+</tr>
+<tr data-part="ihpa-sl303812c91-875d54ce">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Headlight switch (built-in breaker + dash dimmer)</td>
+<td><a href="https://www.ihpartsamerica.com/store/SL303812C91.html">IHPA · SL303812C91</a></td>
+<td>$69.95</td>
+</tr>
+<tr data-part="ihpa-sl468438c91-0daecc6c">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Dash ignition switch</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl468438c91.html">IHPA · SL468438C91</a></td>
+<td>$52.95</td>
+</tr>
+<tr data-part="ihpa-sl370677c91-8720b222">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Floor dimmer switch</td>
+<td><a href="https://www.ihpartsamerica.com/store/SL370677C91.html">IHPA · SL370677C91</a></td>
+<td>$21.95</td>
+</tr>
+<tr data-part="ihpa-sl356998c91-118a885e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Turn signal switch with hazard, 1965–71</td>
+<td><a href="https://www.ihpartsamerica.com/store/SL356998C91.html">IHPA · SL356998C91</a></td>
+<td>$119.95</td>
+</tr>
+<tr data-part="sp-sp18147-f67b3665">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Solid-state 5 V instrument voltage regulator (gauge CVR)</td>
+<td><a href="https://scoutparts.com/Voltage_Regulator_For_Gauges_Scout_80_800_384364C1_Scout_80_Scout_800_Travelall_Travelette_Pickup_Metro/p18147">SP · SP18147</a></td>
+<td>$72.95</td>
+</tr>
+<tr data-part="jegs-painless-30815-6a08f18e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>L</td>
+<td>Headlight relay harness (two 40 A relays)</td>
+<td><a href="https://www.jegs.com/i/Painless-Performance-Products/764/30815/10002/-1">JEGS · Painless 30815</a></td>
+<td>$153.99</td>
+</tr>
+<tr data-part="new-port-engineering-ne6571sc800-438228b5">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td><strong>Electric wiper conversion, 1965–71 Scout 800</strong> (2-speed motor, linkage, arms, blades, switch) — order early; direct from the maker avoids IHPA's 8-week lead</td>
+<td><a href="https://newportwipers.com/product/1965-71-international-scout-800/">New Port Engineering · NE6571SC800</a></td>
+<td>from $599.95</td>
+</tr>
+<tr data-part="ab55028c">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>2-ga battery cables made to length, braided engine-to-firewall and frame-to-body ground straps, star washers</td>
+<td>local</td>
+<td>~$80</td>
+</tr>
+<tr data-part="pertronix-ho-142-1141-1442-2c9313de">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1gate">P1-gate</span></td>
+<td>H</td>
+<td>Pertronix Ignitor — pick by distributor make: Holley 4-cyl (two cap clips, aluminum body) = HO-142; Delco 1110254/1110266 = 1141; Prestolite = 1442</td>
+<td><a href="https://pertronixbrands.com/products/pertronix-1141-ignitor-delco-4-cyl-scout-international">Pertronix · HO-142 / 1141 / 1442</a></td>
+<td>$238 / $136 / $152</td>
+</tr>
+<tr data-part="be37e161">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Distributor cap + rotor for your make (Holley cap SL268575C92 $26.95; Delco IHENG-DIST-CAP-DELCO-4CYL $38.95)</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl268575c92.html">IHPA</a></td>
+<td>—</td>
+</tr>
+<tr data-part="ihpa-iheng-vac-adv-09996325">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Reman vacuum advance</td>
+<td><a href="https://www.ihpartsamerica.com/store/iheng-vac-adv.html">IHPA · IHENG-VAC-ADV</a></td>
+<td>$79.95</td>
+</tr>
+<tr data-part="ihpa-local-sum-g1666-4a719853">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>H</td>
+<td>Delco 10SI/12SI alternator, 63–80 A, <strong>3-wire</strong>, with V-belt pulley — any parts store or IHPA SUM-G1666 (one-wire; can be run 3-wire)</td>
+<td><a href="https://www.ihpartsamerica.com/store/sum-g1666.html">IHPA / local · SUM-G1666</a></td>
+<td>$199.95</td>
+</tr>
+<tr data-part="ihpa-tff-7520a-b2a6e794">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>10SI pigtail</td>
+<td><a href="https://www.ihpartsamerica.com/store/tff-7520a.html">IHPA · TFF-7520A</a></td>
+<td>$8.95</td>
+</tr>
+<tr data-part="ihpa-ballastresis-bf300ffe">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>L</td>
+<td>12 V ballast resistor (only if the harness has no resistance wire and you keep points; Pertronix Ignitor I wants full 12 V with a 1.5 Ω+ coil — read the Pertronix sheet)</td>
+<td><a href="https://www.ihpartsamerica.com/store/ballastresis.html">IHPA · BALLASTRESIS</a></td>
+<td>$24.95</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Grounds first: 2-ga battery negative to the block; braided strap block to firewall; frame-to-body strap at a rear corner mount and at the cowl; dash cluster to body; star washer and scraped paint at every lamp bucket.</li>
+<li>SSS harness: firewall bulkhead connector, dash section behind the new dash (glovebox door on), engine section, tail section through the original clips. New headlight, ignition, dimmer, and turn signal switches. ATO fuse block where SSS locates it.</li>
+<li>Charging: 3-wire 10SI — output stud to battery + with 8-ga minimum (bypass the ammeter loop with a &gt;40 A alternator, or fit a voltmeter), terminal #2 to the battery side of the output stud (remote sense), terminal #1 through the dash charge lamp (<strong>incandescent</strong> — an LED won't excite it) from ignition-on. External regulator removed.</li>
+<li>Ignition: Pertronix in the rebuilt distributor per its sheet (voltage/coil requirements differ between Ignitor I/II/III — read the box); new cap, rotor, plugs gapped 0.030", wires. Static timing 4° BTDC to start.</li>
+<li>Gauges: solid-state 5 V CVR (SP18147) on the back of the temp/oil gauge with a dedicated ground; verify ~5 V out; ground the sender wire to confirm the fuel gauge swings full; each sender reads 73 Ω empty / 10 Ω full.</li>
+<li>Headlight relay harness fed from the alternator stud through its 30 A fuse.</li>
+<li>Electric wipers (New Port): motor in the vacuum-motor location, linkage, arms; wire per the kit; your original vacuum wipers and knob go on the shelf as spares.</li>
+</ol>
+<h3 id="69-cooling-and-heat">6.9 Cooling and heat</h3>
+<p><strong>Parts — cooling and heater</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="1fef0292">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Used complete heater box 1961–71 (with core + blower) — the heater box is not reproduced</td>
+<td><a href="https://ihscout.com/product/scout-80-800-heater-core-box-used-61-71/">ihscout.com</a></td>
+<td>$229.50</td>
+</tr>
+<tr data-part="ihpa-s800-htr-core-4eaa84ce">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Heater core, new (measure the box: 7¾ × 7¾ × 2½ variant)</td>
+<td><a href="https://www.ihpartsamerica.com/store/S800-HTR-CORE.html">IHPA · S800-HTR-CORE</a></td>
+<td>$199.95</td>
+</tr>
+<tr data-part="sp-sp16140-64a44fd6">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Blower motor, 2-speed, new</td>
+<td><a href="https://scoutparts.com/Blower_Motor_Heater_Fan_Motor_New__Scout_II_Scout_80_Scout_800_Travelall_Travelette_Pickup/p16140">SP · SP16140</a></td>
+<td>$297.66</td>
+</tr>
+<tr data-part="sp-sp10200-4dae2dcb">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Heater valve, inline</td>
+<td><a href="https://scoutparts.com/Heater_Valve_NEW_899996R1_Scout_II_Scout_80_Scout_800_Travelall_Travelette_Pickup_Metro/p10200">SP · SP10200</a></td>
+<td>$56.73</td>
+</tr>
+<tr data-part="ihpa-sl870849r1-866bc0c9">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Fresh-air duct hose</td>
+<td><a href="https://www.ihpartsamerica.com/store/sl870849r1.html">IHPA · SL870849R1</a></td>
+<td>$99.95</td>
+</tr>
+<tr data-part="ihpa-nos-338307c1-406980b8">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Heater switch + control cable (NOS)</td>
+<td><a href="https://www.ihpartsamerica.com/store/nos-338307c1.html">IHPA · NOS-338307C1</a></td>
+<td>$59.95</td>
+</tr>
+<tr data-part="e5f208f7">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>5/8" heater hose 10 ft, clamps, closed-cell foam tape for flap seals</td>
+<td>local</td>
+<td>~$40</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Radiator (new aluminum) in with new hoses, 180° thermostat, 50/50 coolant.</li>
+<li>Heater: used box stripped, blasted, epoxied and painted; new core, blower, foam flap seals, control cable and switch, inline valve on the supply hose, duct hose to the cowl vent; defroster ducts repaired (not reproduced).</li>
+</ol>
+<h3 id="610-exterior-and-interior-phase-1-scope">6.10 Exterior and interior, Phase 1 scope</h3>
+<p><strong>Parts — exterior and interior</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="sp-sp12765-sp10352-24cc19d3">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Front bumper, laser-cut repro of 860040R2, plain steel (paint it satin black or body color yourself) + offset stand-off brackets + bolt kit</td>
+<td><a href="https://scoutparts.com/Bumper_Brand_New_Laser_Cut_Reproduction_860040R2_Scout_80_Scout_800/p12765">SP · SP12765 / SP10352</a></td>
+<td>$489.97 / call</td>
+</tr>
+<tr data-part="sp-sp18206-fa7cefc0">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Grille screen, 1965–67 800 (your emblem fits it)</td>
+<td><a href="https://scoutparts.com/Grille_Screen_Scout_80_800_New_Replacement_Emblem_NOT_Included_862260_R1_862260_R1_Scout_80_Scout_800/p18206">SP · SP18206</a></td>
+<td>$265.55</td>
+</tr>
+<tr data-part="ihpa-cpt-s800-gbd-s800-glovebox-1c98f6f7">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>CPT aluminum glovebox door + plastic liner</td>
+<td><a href="https://www.ihpartsamerica.com/store/cpt-s800-gbd.html">IHPA · CPT-S800-GBD / S800-GLOVEBOX</a></td>
+<td>$109.95 / $59.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-batt-try-4cyl-p-dcec5f14">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p1">P1</span></td>
+<td>M</td>
+<td>Battery tray, 4-cyl, powder-coated</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-batt-try-4cyl.html">IHPA · S80-800-BATT-TRY-4CYL-P</a></td>
+<td>$134.95</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Front bumper (plain repro, painted satin black or epoxy + Aspen Green later) on the original stand-offs; rear bumper cleaned, epoxy, satin black for now (re-chrome is Phase 2).</li>
+<li>Grille screen, your new grille emblem, hood emblem, mirrors, ash tray, dash bezel, visor bar, steering wheel — all the parts you already bought go on now.</li>
+<li>Seats: bolt the Subaru seats down properly on fabricated brackets to the original seat-base locations (or set the original IH frames on their correct risers un-upholstered — they'll bolt straight in at Phase 2 with covers on). Lap belts anchored to the floor supports with backing plates.</li>
+<li>Body lift decision: only if §5.4 step 5 showed the 33s touching at full bump with the extended stops: 1" pucks under all 9 mounts, longer mount bolts, and re-check the steering coupler and shifter clearances. Otherwise, none.</li>
+</ol>
+<h2 id="7-commissioning">7. Commissioning</h2>
+<ol>
+<li><strong>Fluids checklist:</strong> engine oil (15W-40 or a 10W-40 with zinc for cam break-in, plus a break-in additive), filter pre-filled; coolant; trans MT-1 80W-90; T-case same; front diff 85W-140; knuckles TK 777; rear diff GL-5 80W-90 + modifier; brake DOT 3; clutch DOT 3; steering box lube.</li>
+<li><strong>Pre-start:</strong> plugs out, crank until oil pressure shows (or prime with a drill); fuel to the carb (rebuilt with your kit, float level per the manual); static timing; all grounds re-checked; fire extinguisher in reach.</li>
+<li><strong>First start and cam break-in:</strong> start, immediately bring to 2,000–2,500 rpm and hold for 20 minutes varying ±300 rpm (never idle a new flat-tappet cam); watch oil pressure (50–60 cold, 10–20 hot idle minimum with SAE 30 is the factory floor), temperature, leaks. Shut down, re-torque the head after full cool-down if the gasket maker requires, re-check intake and exhaust bolts.</li>
+<li><strong>Timing and carb:</strong> 4° BTDC at 500–575 rpm with vacuum disconnected, then check total advance ~34–36° at 3,000 rpm; idle mixture by vacuum gauge.</li>
+<li><strong>Drivetrain:</strong> clutch free play, shift through all gears static, twin-sticks through 2H/4H/N/4L, hubs lock and unlock.</li>
+<li><strong>Brakes:</strong> pedal height and free play; bed the pads (10 stops 30→5 mph, cool); then set the prop valve on a loose surface — fronts should lock a hair before the rears; re-bleed after the first 20 miles.</li>
+<li><strong>Alignment:</strong> with the truck on its wheels and driven around the block to settle the springs: torque shackle and eye bolts at ride height; caster +3–4° (add/flip the CPT shims if not); toe-in 1/16–1/8" at tire centerline height; wheel centered with the box on its high spot. Re-torque U-bolts at 100 miles.</li>
+<li><strong>Wheels:</strong> lug nuts 90–110 ft-lb, re-torque at 50 miles.</li>
+<li><strong>Shakedown, 500 miles:</strong> 100-mile checks of every fluid level and leak; 300-mile oil and filter change (break-in oil out); drum re-adjust; parking brake re-set; kingpin preload re-check (new bearings seat); rear hub nut re-check (cotter pins out, confirm torque, new pins); driveshaft strap bolts; every ground.</li>
+</ol>
+<h2 id="8-phase-2-paint-and-interior">8. Phase 2 — paint and interior</h2>
+<p>Do this after at least a season of driving. The prep work you did in Phase 1 (all metal repair complete, floors and underside coated, engine bay done, Traveltop sealed) is exactly what makes body-on paint a clean job.</p>
+<h3 id="81-decide-the-color">8.1 Decide the color</h3>
+<p><strong>Parts — Phase 2</strong></p>
+<div class="tablewrap"><table class="parts">
+<thead>
+<tr>
+<th></th>
+<th>Ph</th>
+<th>Pri</th>
+<th>Item</th>
+<th>Source</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+<tr data-part="paintscratch-43430-7510bca2">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Aspen Green spray-out: PaintScratch 12 oz aerosol, PPG 43430, for color check before committing</td>
+<td><a href="https://www.paintscratch.com/touch_up_paint/Fleet/1966-Fleet-PPG-Paints-Aspen-Green-43430.html">PaintScratch · 43430</a></td>
+<td>$39.95</td>
+</tr>
+<tr data-part="3b09cab8">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Single-stage urethane mixed to PPG 43430 (any PPG/Axalta jobber; ~1.5 gal for an 800 incl. jambs, dash, inside top)</td>
+<td>local jobber</td>
+<td>~$400–600</td>
+</tr>
+<tr data-part="a737bfc3">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>SPI 2K high-build primer, gallon</td>
+<td><a href="https://www.southernpolyurethanes.com/pricing">SPI</a></td>
+<td>$186.84 MSRP</td>
+</tr>
+<tr data-part="4b351759">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Original-pattern upholstery full set (front bottoms/backs + rear), custom color</td>
+<td><a href="https://www.customcutcovers.com/product-page/ih-scout-800-original-pattern-full-set-black">Custom Cut Covers</a></td>
+<td>$699</td>
+</tr>
+<tr data-part="sp-sp20127-40e50294">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Rubber floor mat set, repro (driver, passenger, tool compartment) — special order</td>
+<td><a href="https://scoutparts.com/Floor_Mat_Set_New_Reproduction_Rubber_Scout_800_And_Scout_80_267623C1_318572C1_318054C2_Scout_80_Scout_800/p20127">SP · SP20127</a></td>
+<td>$599.83</td>
+</tr>
+<tr data-part="ihpa-s800-armrest-b07181d5">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Door arm rests, wood-core replica 1966–71</td>
+<td><a href="https://www.ihpartsamerica.com/store/s800-armrest.html">IHPA · S800-ARMREST</a></td>
+<td>$34.95 ea</td>
+</tr>
+<tr data-part="ihpa-s800-sunvisorset-a33509ed">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Sun visor set (you have the bar)</td>
+<td><a href="https://www.ihpartsamerica.com/store/s800-sunvisorset.html">IHPA · S800-SUNVISORSET</a></td>
+<td>$259.95</td>
+</tr>
+<tr data-part="ihpa-s80-800-drpnl-7f63737e">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Door panel set (upgrade; '67 door inners were painted with an arm rest)</td>
+<td><a href="https://www.ihpartsamerica.com/store/s80-800-drpnl.html">IHPA · S80-800-DRPNL</a></td>
+<td>$299.95</td>
+</tr>
+<tr data-part="kilmat-klm8036-39a33e2a">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Sound deadener, 80-mil butyl, 2 boxes</td>
+<td><a href="https://www.amazon.com/Kilmat-Deadening-Automotive-Insulation-dampening/dp/B0751CBXBT">Kilmat · KLM8036</a></td>
+<td>~$65 ea</td>
+</tr>
+<tr data-part="b15672b6">
+<td><input type="checkbox" class="chk part" aria-label="Bought"></td>
+<td><span class="ph ph-p2">P2</span></td>
+<td>L</td>
+<td>Rear bumper re-chrome or powder coat</td>
+<td>local</td>
+<td>$400–800 est.</td>
+</tr>
+</tbody>
+</table></div>
+<ol>
+<li>Spray-out card: the PaintScratch PPG 43430 aerosol on a primed card next to an unfaded original spot (inside the glovebox, under the dash pad, inside the door jamb where the seal sat). Have a jobber with a color camera read the unfaded spot too. If you want "a deep green" instead, pick it with the card next to the truck in sunlight — but Aspen Green on a '67 800 is the answer the truck gives.</li>
+<li>Dash and interior metal on most 1966–67 800s were body color; that decides whether the cabin gets green or a contrasting color. Confirm with the line-setting ticket's paint line (113S 5683GR — one code, so body color throughout).</li>
+</ol>
+<h3 id="82-body-on-repaint-driver-quality">8.2 Body-on repaint, driver quality</h3>
+<ol>
+<li>Off: doors, hood, Traveltop, windshield, tailgate, all glass, both bumpers, grille, emblems, mirrors, lamps, handles, door seals. The tub stays on the frame; the engine bay and underside are masked, not painted.</li>
+<li>Strip to bare metal on every panel with rust or unknown filler (DA/stripping disc; chemical stripper for the flat panels; the cracked, rough paint on the rear shell means the whole top gets stripped). Blasting only for the underside/inside surfaces you did not do in Phase 1.</li>
+<li>SPI epoxy two coats → filler and glaze over epoxy → SPI 2K high-build, block 180 → 320 → epoxy sealer (reduced) → three coats single-stage urethane in 43430 → cut and buff after three weeks. Single-stage is correct for a solid 1967 color and is spot-repairable after a trail scratch.</li>
+<li>DIY materials ~$1,200–1,800 plus booth rental; shop quotes for a small SUV delivered stripped and in epoxy run $6,000–10,000 for driver quality in Southern California. Get three quotes; ask specifically for single-stage and for the top and doors to be painted off the truck.</li>
+<li>Reassemble with all-new seals a second time only where paint got under them; otherwise the Phase 1 seals survive if you tape them out carefully.</li>
+</ol>
+<h3 id="83-interior">8.3 Interior</h3>
+<ol>
+<li>Original IH seat frames to the local upholstery shop with the Custom Cut Covers original-pattern set in the '67 color (decide from a period photo or the paint chip chart); they rebuild springs and cut foam.</li>
+<li>Floors: Kilmat over the Raptor, closed-cell foam, then the repro rubber mat set (bucket layout). Door arm rests (wood-core replica), sun visors, door panels if you want them, rear seat armrests.</li>
+<li>Dash pad: none reproduced — re-cover the original or source used. Headliner: the 800 had none; paint the inside of the top in the body color (satin) or have the trim shop bond a foam-backed vinyl.</li>
+<li>Rear bumper to re-chrome or powder coat; bumper stand-offs painted.</li>
+</ol>
+<h2 id="9-sources">9. Sources</h2>
+<p>Vendor pages (all fetched 3 Sep 2026): IH Parts America store and forums (ihpartsamerica.com), Super Scout Specialists (superscoutspecialists.com), scoutparts.com, Anything Scout (anythingscout.com), ihscout.com, Torque King 4x4 (torqueking.com), Back Country Binders, D&amp;C Extreme, Scout Or Die, Gas Tank Depot, New Port Engineering, Pertronix, Painless, American Autowire, Southern Polyurethanes, Eastwood, PaintScratch, Everest Automotive, Custom Cut Covers, Classic 2 Current Fabrication, Novak Conversions (T-18/T-19 and Dana 20 guides), Advance Adapters, Kaiser Willys (Dana 27/44 procedures), ALLDATA leak-down bulletin, OnAllCylinders (Jeff Smith on leak-down), oldihc.wordpress.com (IH compression table), Wikipedia (International Scout). The three research files behind this plan — engine/drivetrain, axles/brakes/suspension, body/electrical/fuel/finish — are saved alongside it in the project with every URL.</p>
+    <p class="foot">Checkboxes on parts and steps are saved to this page's project database when it is available (shared across your devices), otherwise in this browser. Prices are what the linked pages showed on 3 September 2026; call before ordering anything marked unverified or gated. Torque figures marked "verify in CTS-2302" must be confirmed against the factory manual before final assembly.</p>
+  </main>
+</div>
+
+<script>
+(function() {
+  var LS_KEY = 'scout800-plan-state';
+  var state = { parts: {}, steps: {} };
+  var backend = 'local';
+  var dbDoc = null;
+  var prog = document.getElementById('progress');
+
+  function loadLocal() { try { var s = JSON.parse(localStorage.getItem(LS_KEY) || 'null'); if (s && s.parts) state = s; } catch (e) {} }
+  function saveLocal() { try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch (e) {} }
+
+  // step checkboxes on procedural sections 5-8
+  var stepBoxes = [], partBoxes = [];
+  document.querySelectorAll('main ol > li').forEach(function(el) {
+    var hd = el.parentNode; while (hd && !(hd.tagName === 'H2' || hd.tagName === 'H3')) hd = hd.previousElementSibling;
+    if (!hd) return;
+    var secH2 = hd; while (secH2 && secH2.tagName !== 'H2') secH2 = secH2.previousElementSibling;
+    if (!secH2 || !/^[5-8]\./.test(secH2.textContent)) return;
+    var idx = Array.prototype.indexOf.call(el.parentNode.children, el);
+    var key = (hd.id || hd.textContent) + '#' + idx;
+    var cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.className = 'chk'; cb.setAttribute('aria-label', 'Step done');
+    el.classList.add('has-check'); el.insertBefore(cb, el.firstChild);
+    stepBoxes.push({ key: key, cb: cb, el: el });
+    cb.addEventListener('change', function() { toggle('steps', key, cb.checked); });
+  });
+  document.querySelectorAll('tr[data-part]').forEach(function(tr) {
+    var cb = tr.querySelector('input.part'); var key = tr.getAttribute('data-part');
+    partBoxes.push({ key: key, cb: cb, el: tr });
+    cb.addEventListener('change', function() { toggle('parts', key, cb.checked); });
+  });
+
+  function render() {
+    var d = 0, b = 0;
+    stepBoxes.forEach(function(s) { var on = !!state.steps[s.key]; s.cb.checked = on; s.el.classList.toggle('done', on); if (on) d++; });
+    partBoxes.forEach(function(p) { var on = !!state.parts[p.key]; p.cb.checked = on; p.el.classList.toggle('bought', on); if (on) b++; });
+    var where = backend === 'db' ? 'saved to the project' : 'saved in this browser only';
+    prog.innerHTML = 'Parts bought: <b>' + b + '</b> of ' + partBoxes.length + ' &nbsp;·&nbsp; Steps done: <b>' + d + '</b> of ' + stepBoxes.length + ' &nbsp;·&nbsp; ' + where;
+  }
+  var writeTimer = null;
+  function toggle(kind, key, on) {
+    if (on) state[kind][key] = true; else delete state[kind][key];
+    render();
+    saveLocal();
+    if (dbDoc) {
+      clearTimeout(writeTimer);
+      writeTimer = setTimeout(function() {
+        dbDoc.set({ parts: state.parts, steps: state.steps, updatedAt: new Date().toISOString() }).catch(function() {});
+      }, 300);
+    }
+  }
+
+  loadLocal(); render();
+
+  var usePromise = (window.claude && typeof window.claude.use === 'function') ? window.claude.use('db') : Promise.resolve(null);
+  usePromise.then(function(db) {
+    if (!db) return;
+    dbDoc = db.doc('state/checklist');
+    dbDoc.onSnapshot(function(snap) {
+      backend = 'db';
+      if (snap.exists) {
+        var data = snap.data() || {};
+        state = { parts: Object.assign({}, data.parts || {}), steps: Object.assign({}, data.steps || {}) };
+        saveLocal();
+      } else if (Object.keys(state.parts).length || Object.keys(state.steps).length) {
+        // first run with a local state and no server doc: migrate it up
+        dbDoc.set({ parts: state.parts, steps: state.steps, updatedAt: new Date().toISOString() }).catch(function() {});
+      }
+      render();
+    }, function() { backend = 'local'; dbDoc = null; render(); });
+  }).catch(function() {});
+
+  // TOC active state
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  var heads = links.map(function(a) { return document.getElementById(decodeURIComponent(a.getAttribute('href').slice(1))); });
+  function onScroll() {
+    var y = window.scrollY + 90, cur = -1;
+    for (var i = 0; i < heads.length; i++) { if (heads[i] && heads[i].offsetTop <= y) cur = i; }
+    links.forEach(function(a, i) { a.classList.toggle('active', i === cur); });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true}); onScroll();
+})();
+</script>
+
+</body></html>
